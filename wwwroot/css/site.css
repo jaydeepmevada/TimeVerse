@@ -1301,12 +1301,13 @@ a:hover {
 .tv-input {
     background: var(--tv-cream-light);
     border: 1px solid var(--tv-border);
-    border-radius: 4px;
-    padding: 0.7rem 0.9rem;
-    font-size: 0.88rem;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.92rem;
     color: var(--tv-primary-dark);
     transition: var(--tv-transition);
     width: 100%;
+    box-sizing: border-box;
 }
 
 .tv-input:focus {
@@ -1319,14 +1320,16 @@ a:hover {
 .tv-select {
     background: var(--tv-white);
     border: 1px solid var(--tv-border);
-    border-radius: 4px;
-    padding: 0.65rem 1rem;
-    font-size: 0.88rem;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-size: 0.92rem;
     color: var(--tv-primary-dark);
+    box-sizing: border-box;
 }
 
 .tv-select:focus {
     border-color: var(--tv-accent-lime);
+    box-shadow: 0 0 0 3px var(--tv-accent-lime-glow);
     outline: none;
 }
 
@@ -1971,7 +1974,17 @@ a:hover {
     gap: 1rem;
 }
 
-/* Responsive adjustments */
+/* ==========================================================================
+   TIMEVERSE RESPONSIVE DESIGN SYSTEM (MOBILE, TABLET & DESKTOP)
+   ========================================================================== */
+
+/* Prevent horizontal page overflow on small devices */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+/* Tablet & Medium Screens (< 992px) */
 @media (max-width: 991.98px) {
     .tv-hero-title {
         font-size: 2.4rem;
@@ -1995,43 +2008,275 @@ a:hover {
     .tv-hand-second {
         height: 105px;
     }
+    .tv-catalog-header form {
+        max-width: 100% !important;
+    }
 }
 
-@media (max-width: 575.98px) {
-    .tv-hero-title {
-        font-size: 2rem;
+/* Mobile Screens (< 768px) - Form Fields, Touch Optimization, Padding */
+@media (max-width: 767.98px) {
+    /* 1. Form Inputs & Selects: Enforce 16px font-size to prevent iOS auto-zoom */
+    .tv-input,
+    .tv-select,
+    .form-control,
+    .form-select,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="url"],
+    input[type="search"],
+    select,
+    textarea {
+        font-size: 16px !important;
+        min-height: 48px;
+        line-height: 1.4;
+        border-radius: 8px;
+        padding: 0.75rem 0.95rem;
+        box-sizing: border-box;
     }
-    .tv-hero-section {
-        padding: 3rem 0;
+
+    textarea.form-control,
+    textarea.tv-input,
+    textarea {
+        min-height: 110px;
     }
-    .tv-clock-section {
-        padding: 3rem 0;
+
+    /* 2. Unified Input Groups (₹ Currency, Search, etc.) */
+    .input-group {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        width: 100% !important;
     }
+
+    .input-group > .input-group-text {
+        font-size: 16px !important;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.95rem;
+        border-radius: 8px 0 0 8px !important;
+        flex-shrink: 0;
+    }
+
+    .input-group > .form-control,
+    .input-group > .tv-input {
+        border-radius: 0 8px 8px 0 !important;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .input-group > .btn {
+        min-height: 48px;
+        padding: 0.75rem 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+        border-radius: 0 8px 8px 0 !important;
+    }
+
+    /* 3. Form Labels, Checks & Helpers */
+    .form-label,
+    label {
+        font-size: 0.84rem !important;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        display: block;
+    }
+
+    .form-check {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-left: 2rem;
+    }
+
+    .form-check .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-left: -2rem;
+        margin-top: 0;
+        flex-shrink: 0;
+    }
+
+    .form-check-label {
+        font-size: 0.88rem !important;
+        cursor: pointer;
+    }
+
+    /* 4. Card & Container Padding on Mobile (Maximizes field width) */
+    .p-4.p-md-5,
+    .card-body.p-4.p-md-5,
+    .luxury-card.p-4.p-md-5 {
+        padding: 1.4rem 1rem !important;
+    }
+
+    .card.p-4,
+    .luxury-card.p-4 {
+        padding: 1.25rem 0.95rem !important;
+    }
+
+    .luxury-container,
+    .container-xl {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .tv-auth-card {
+        padding: 1.5rem 1.15rem !important;
+        border-radius: 14px;
+    }
+
+    /* 5. Section Paddings */
     .tv-section-light,
-    .tv-section-muted {
-        padding: 3.5rem 0;
+    .tv-section-muted,
+    .tv-section-dark {
+        padding: 2.75rem 0 !important;
     }
-    .tv-clock-wrapper {
-        width: 250px;
-        height: 250px;
+
+    .tv-catalog-header {
+        padding: 2rem 0 1.5rem !important;
     }
-    .tv-clock-marker {
-        transform-origin: center 100px;
+
+    /* 6. Typography adjustments */
+    .tv-hero-title {
+        font-size: 2.1rem;
+        line-height: 1.22;
     }
-    .tv-hand-hour {
-        height: 52px;
+
+    .tv-section-title {
+        font-size: 1.75rem;
     }
-    .tv-hand-minute {
-        height: 75px;
+
+    .tv-catalog-header h1 {
+        font-size: 1.85rem;
     }
-    .tv-hand-second {
-        height: 92px;
-    }
+
+    /* 7. Buttons on Mobile - comfortable touch target without forcing 100% everywhere */
     .tv-btn-primary,
     .tv-btn-dark,
     .tv-btn-outline,
-    .tv-btn-outline-light {
-        width: 100%;
+    .tv-btn-outline-light,
+    .btn-luxury-primary,
+    .btn-luxury-outline {
+        min-height: 46px;
+        padding: 0.7rem 1.25rem;
+        font-size: 0.92rem;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tv-btn-block-mobile,
+    .btn-block-mobile {
+        width: 100% !important;
         text-align: center;
+        justify-content: center;
+    }
+
+    /* 8. Table Responsiveness */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: auto;
+        display: block;
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    /* 9. Saved Addresses & Payment Cards (Checkout) */
+    .saved-address-card,
+    .payment-option {
+        padding: 0.95rem !important;
+        border-radius: 10px;
+    }
+}
+
+/* Extra Small Screens (< 576px) */
+@media (max-width: 575.98px) {
+    .tv-hero-title {
+        font-size: 1.85rem;
+        line-height: 1.22;
+    }
+
+    .tv-hero-description {
+        font-size: 0.95rem;
+    }
+
+    .tv-hero-section {
+        padding: 2.5rem 0 2rem;
+    }
+
+    .tv-section-title {
+        font-size: 1.5rem;
+    }
+
+    .tv-catalog-header h1 {
+        font-size: 1.6rem;
+    }
+
+    /* Clock on small devices */
+    .tv-clock-wrapper {
+        width: 230px !important;
+        height: 230px !important;
+    }
+
+    .tv-clock-marker {
+        transform-origin: center 92px !important;
+    }
+
+    .tv-hand-hour {
+        height: 46px !important;
+    }
+
+    .tv-hand-minute {
+        height: 68px !important;
+    }
+
+    .tv-hand-second {
+        height: 82px !important;
+    }
+
+    /* Auth submit & Place Order buttons get 100% block */
+    .tv-auth-card button[type="submit"],
+    #checkoutForm button[type="submit"],
+    .tv-cart-summary a.tv-btn-primary {
+        width: 100% !important;
+        min-height: 50px;
+        font-size: 1rem;
+    }
+
+    /* Stack form action button toolbars cleanly on mobile */
+    .tv-form-actions-stack {
+        flex-direction: column-reverse !important;
+        width: 100%;
+    }
+
+    .tv-form-actions-stack > * {
+        width: 100% !important;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Product Card actions */
+    .tv-card-footer-actions {
+        grid-template-columns: 1fr;
+    }
+
+    /* Search bar in catalog */
+    .tv-catalog-header form.d-flex.gap-2 {
+        flex-direction: column;
+        width: 100% !important;
+    }
+
+    .tv-catalog-header form.d-flex.gap-2 button {
+        width: 100% !important;
     }
 }
