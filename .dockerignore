@@ -9,7 +9,6 @@
 **/.vs
 **/.vscode
 **/*.*.user
-**/*.db
 **/*.db-shm
 **/*.db-wal
 bin/

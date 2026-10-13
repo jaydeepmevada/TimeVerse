@@ -32,7 +32,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Create directory for persistent uploads
-RUN mkdir -p /app/wwwroot/images/uploads
+# Create directory for uploads and ensure file permissions
+RUN mkdir -p /app/wwwroot/uploads/watches && chmod -R 777 /app/wwwroot/uploads
 
 ENTRYPOINT ["dotnet", "TimeVerse.dll"]
