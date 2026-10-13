@@ -51,8 +51,8 @@ namespace TimeVerse.Data
                     UserName = adminEmail,
                     Email = adminEmail,
                     EmailConfirmed = true,
-                    FirstName = "Alexander",
-                    LastName = "Vance",
+                    FirstName = "Jaydeep",
+                    LastName = "Mevada",
                     PhoneNumber = "+91 98000 11111",
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow
@@ -66,6 +66,11 @@ namespace TimeVerse.Data
             }
             else
             {
+                // Ensure admin name matches Jaydeep Mevada
+                existingAdmin.FirstName = "Jaydeep";
+                existingAdmin.LastName = "Mevada";
+                await userManager.UpdateAsync(existingAdmin);
+
                 // Ensure admin password matches updated password
                 var token = await userManager.GeneratePasswordResetTokenAsync(existingAdmin);
                 await userManager.ResetPasswordAsync(existingAdmin, token, adminPassword);
@@ -96,6 +101,13 @@ namespace TimeVerse.Data
 
                 // 9. Restore user-added watches with their original uploaded photos
                 await RestoreUserWatchesAsync(context);
+
+                // Checkpoint SQLite WAL so changes are fully merged into the main .db file
+                try
+                {
+                    await context.Database.ExecuteSqlRawAsync("PRAGMA wal_checkpoint(TRUNCATE);");
+                }
+                catch { }
             }
             catch (Exception ex)
             {
