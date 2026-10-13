@@ -1,0 +1,82 @@
+@model TimeVerse.ViewModels.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Collector Sign In — TIMEVERSE";
+}
+
+<section class="tv-section-dark" style="min-height: 80vh; display: flex; align-items: center; background: radial-gradient(circle at center, var(--tv-secondary) 0%, var(--tv-primary) 100%);">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                <!-- Luxury Glass Login Card -->
+                <div class="p-4 p-md-5 rounded-4" style="background: rgba(11, 25, 44, 0.94); backdrop-filter: blur(16px); border: 1px solid rgba(30, 62, 98, 0.45); box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+                    <!-- Brand Header -->
+                    <div class="text-center mb-4">
+                        <a asp-controller="Home" asp-action="Index" class="text-decoration-none d-inline-flex flex-column align-items-center">
+                            <img src="~/images/timeverse-emblem.svg" alt="TimeVerse" style="height: 68px; width: auto; filter: drop-shadow(0 4px 14px rgba(173, 198, 255, 0.45)); margin-bottom: 0.5rem;" />
+                            <div class="tv-brand-name" style="font-size: 1.85rem; letter-spacing: -0.01em;">
+                                Time<span class="verse-highlight">Verse</span>
+                            </div>
+                            <div class="tv-brand-tagline" style="color: #94A3B8; font-size: 0.65rem; letter-spacing: 0.25em; margin-top: 2px;">THE UNIVERSE OF TIME</div>
+                        </a>
+                        <h2 style="font-size: 1.6rem; color: #FFFFFF; margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 700; letter-spacing: 0.05em;">SIGN IN</h2>
+                    </div>
+
+                    <!-- Validation Summary -->
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 mb-3" style="font-size: 0.85rem; background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #ff8585;"></div>
+
+                    <form method="post" asp-controller="Account" asp-action="Login" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="Email" class="tv-input" placeholder="collector@example.com" autofocus autocomplete="off" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="Email" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label asp-for="Password" class="form-label fw-bold mb-0" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                                <a href="javascript:void(0)" onclick="TimeVerseState.showToast('Password recovery instructions sent to your registered email.')" style="font-size: 0.75rem; color: #38BDF8;">Forgot Password?</a>
+                            </div>
+                            <input asp-for="Password" class="tv-input" placeholder="••••••••" autocomplete="new-password" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="Password" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="mb-4 form-check">
+                            <input asp-for="RememberMe" class="form-check-input" style="background-color: var(--tv-secondary); border-color: var(--tv-border-dark);" />
+                            <label asp-for="RememberMe" class="form-check-label text-white" style="font-size: 0.82rem;"></label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="tv-btn-primary w-100 mb-3" style="padding: 0.85rem; background: #2563EB !important; border: 1px solid #3B82F6 !important; color: #FFFFFF !important; font-weight: 700; letter-spacing: 0.05em; font-size: 0.95rem;">
+                            SIGN IN
+                        </button>
+
+                        <div class="text-center" style="font-size: 0.85rem; color: #94A3B8;">
+                            New to TimeVerse? 
+                            <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl" style="color: #38BDF8; font-weight: 600;">
+                                Create an Account
+                            </a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Academic Role Testing Hints Box -->
+                <div class="mt-4 p-3 rounded-3" style="background: rgba(15, 23, 42, 0.7); border: 1px dashed var(--tv-border-dark); font-size: 0.78rem; color: #94A3B8;">
+                    <div class="fw-bold text-white mb-1"><i class="bi bi-info-circle text-warning" style="color: #38BDF8 !important;"></i> Academic Evaluation Credentials:</div>
+                    <div><strong>Admin:</strong> admin@timeverse.com | <strong>Pass:</strong> Admin@2005</div>
+                    <div><strong>Sales:</strong> sales@timeverse.com | <strong>Pass:</strong> Sales@TimeVerse2026!</div>
+                    <div><strong>Customer:</strong> customer@timeverse.com | <strong>Pass:</strong> Customer@TimeVerse2026!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

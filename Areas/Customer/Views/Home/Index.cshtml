@@ -1,0 +1,141 @@
+@model TimeVerse.ViewModels.Customer.CustomerDashboardViewModel
+@{
+    ViewData["Title"] = "My Account — TIMEVERSE";
+}
+
+<section class="tv-catalog-header" style="padding: 2.5rem 0 2rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                @if (Model.IsNewUser)
+                {
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mb-2 d-inline-block px-3 py-1">Welcome to TimeVerse</span>
+                }
+                else
+                {
+                    <span class="badge bg-dark text-white mb-2 d-inline-block px-3 py-1">My Account</span>
+                }
+                <h1 style="font-size: 2.3rem; color: #FFFFFF; margin-bottom: 0.25rem;">
+                    Welcome, <span style="color: var(--tv-accent);">@Model.FirstName</span>!
+                </h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Manage your orders, profile, and saved addresses here.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Customer" asp-controller="Profile" asp-action="Index" class="tv-btn-outline-light" style="padding: 0.6rem 1.2rem;">
+                    <i class="bi bi-person-gear"></i> Edit Profile
+                </a>
+                <a asp-controller="Shop" asp-action="Index" class="tv-btn-primary" style="padding: 0.6rem 1.2rem;">
+                    <i class="bi bi-shop"></i> Shop Watches
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Customer Quick Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-house-door"></i> My Account</a>
+            <a asp-area="Customer" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-bag-check"></i> My Orders</a>
+            <a asp-area="Customer" asp-controller="Profile" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-person"></i> Profile</a>
+            <a asp-area="Customer" asp-controller="Profile" asp-action="Addresses" class="tv-dashboard-link"><i class="bi bi-geo-alt"></i> Addresses</a>
+            <a asp-area="Customer" asp-controller="Profile" asp-action="ChangePassword" class="tv-dashboard-link"><i class="bi bi-shield-lock"></i> Password</a>
+            <a asp-area="" asp-controller="Shop" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-shop"></i> All Watches</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4rem;">
+    <div class="container-xl">
+        <!-- Dashboard Summary Counters -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-6">
+                <div class="p-3 rounded h-100 luxury-card" style="background: var(--tv-white); border-left: 5px solid var(--tv-accent-lime);">
+                    <div class="text-muted" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700;">My Orders</div>
+                    <div style="font-size: 2rem; font-weight: 800; font-family: var(--tv-font-sans);">@Model.OrderCount</div>
+                    <div style="font-size: 0.78rem; color: var(--tv-muted);">Total Placed Orders</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="p-3 rounded h-100 luxury-card" style="background: var(--tv-white); border-left: 5px solid #FFD21E;">
+                    <div class="text-muted" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700;">Wishlist</div>
+                    <div style="font-size: 2rem; font-weight: 800; font-family: var(--tv-font-sans);">@Model.WishlistCount</div>
+                    <div style="font-size: 0.78rem; color: #4C8200;">Saved Watches</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="p-3 rounded h-100 luxury-card" style="background: var(--tv-white); border-left: 5px solid #00E5FF;">
+                    <div class="text-muted" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700;">Cart</div>
+                    <div style="font-size: 2rem; font-weight: 800; font-family: var(--tv-font-sans);">@Model.CartCount</div>
+                    <div style="font-size: 0.78rem; color: var(--tv-muted);">Items Ready to Buy</div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="p-3 rounded h-100 luxury-card" style="background: var(--tv-white); border-left: 5px solid #FF70A6;">
+                    <div class="text-muted" style="font-size: 0.78rem; text-transform: uppercase; font-weight: 700;">Addresses</div>
+                    <div style="font-size: 2rem; font-weight: 800; font-family: var(--tv-font-sans);">@Model.AddressCount</div>
+                    <div style="font-size: 0.78rem; color: var(--tv-muted);">Saved Locations</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left: Orders Section & Empty State -->
+            <div class="col-lg-8">
+                <div class="p-4 rounded mb-4 luxury-card" style="background: var(--tv-white);">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h3 style="font-size: 1.3rem; margin-bottom: 0; font-weight: 800;">My Orders</h3>
+                        <a asp-controller="Shop" asp-action="Index" class="btn btn-sm btn-outline-dark">Browse All Watches</a>
+                    </div>
+
+                    <!-- Friendly Empty State -->
+                    <div class="text-center py-5 rounded" style="background: var(--tv-cream-light); border: 1px dashed var(--tv-border);">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem; color: var(--tv-muted);">
+                            <i class="bi bi-bag"></i>
+                        </div>
+                        <h5 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.35rem;">No Orders Yet</h5>
+                        <p style="color: var(--tv-muted); font-size: 0.92rem; max-width: 440px; margin: 0 auto 1.25rem;">
+                            You haven't ordered any watches yet. Browse our collection and find the watch that matches your style.
+                        </p>
+                        <a asp-controller="Shop" asp-action="Index" class="tv-btn-primary" style="padding: 0.7rem 1.6rem;">
+                            <i class="bi bi-cart3"></i> Start Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Quick Links & Security Navigation -->
+            <div class="col-lg-4">
+                <div class="p-4 rounded luxury-card-dark" style="background: var(--tv-surface-dark); color: var(--tv-white);">
+                    <h4 style="color: var(--tv-accent); font-size: 1.2rem; font-weight: 800; margin-bottom: 1.25rem;">
+                        Quick Menu
+                    </h4>
+                    <div class="d-flex flex-column gap-2">
+                        <a asp-area="Customer" asp-controller="Profile" asp-action="Index" class="p-2 rounded d-flex align-items-center justify-content-between text-decoration-none text-white" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                            <span><i class="bi bi-person me-2 text-warning"></i> My Profile</span>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </a>
+                        <a asp-area="Customer" asp-controller="Profile" asp-action="Addresses" class="p-2 rounded d-flex align-items-center justify-content-between text-decoration-none text-white" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                            <span><i class="bi bi-geo-alt me-2 text-info"></i> Saved Addresses</span>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </a>
+                        <a asp-area="Customer" asp-controller="Profile" asp-action="ChangePassword" class="p-2 rounded d-flex align-items-center justify-content-between text-decoration-none text-white" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                            <span><i class="bi bi-shield-lock me-2 text-success"></i> Change Password</span>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </a>
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="mt-3">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="tv-btn-outline-light w-100" style="padding: 0.65rem;">
+                                <i class="bi bi-box-arrow-right"></i> Sign Out
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

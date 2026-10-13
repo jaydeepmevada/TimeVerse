@@ -1,0 +1,169 @@
+@model TimeVerse.ViewModels.WatchFinder.WatchFinderWizardViewModel
+@{
+    ViewData["Title"] = "Horological Concierge Finder";
+}
+
+<div class="luxury-container py-5">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
+        <a asp-controller="Home" asp-action="Index">TimeVerse</a>
+        <span class="separator">/</span>
+        <span class="current">Watch Finder Wizard</span>
+    </nav>
+
+    <div class="text-center max-w-lg mx-auto mb-5">
+        <span class="badge-accent mb-2">Concierge Advisory</span>
+        <h1 class="display-4 fw-bold font-serif">The Watch Finder Wizard</h1>
+        <p class="text-muted fs-5">
+            Answer three bespoke questions to discover the exact timepiece aligned with your taste, occasion, and horological preference.
+        </p>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card luxury-card p-4 p-md-5">
+                <form asp-controller="WatchFinder" asp-action="Index" method="post">
+                    <!-- Step 1: Gender / Profile -->
+                    <div class="mb-5">
+                        <h4 class="font-serif fw-bold mb-3 d-flex align-items-center gap-2">
+                            <span class="badge bg-dark rounded-pill">1</span>
+                            <span>Who is this timepiece for?</span>
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.SelectedGender == TimeVerse.Models.WatchGender.Men ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="SelectedGender" value="@TimeVerse.Models.WatchGender.Men" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif fs-5">Men's Timepieces</div>
+                                    <small class="text-muted">Bold 40mm-44mm cases, mechanical calibres</small>
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.SelectedGender == TimeVerse.Models.WatchGender.Women ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="SelectedGender" value="@TimeVerse.Models.WatchGender.Women" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif fs-5">Women's Timepieces</div>
+                                    <small class="text-muted">Graceful diamond accents, mother-of-pearl</small>
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.SelectedGender == TimeVerse.Models.WatchGender.Unisex ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="SelectedGender" value="@TimeVerse.Models.WatchGender.Unisex" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif fs-5">Unisex / Universal</div>
+                                    <small class="text-muted">Versatile 36mm-39mm proportions</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Lifestyle & Movement -->
+                    <div class="mb-5">
+                        <h4 class="font-serif fw-bold mb-3 d-flex align-items-center gap-2">
+                            <span class="badge bg-dark rounded-pill">2</span>
+                            <span>What is your primary occasion or lifestyle?</span>
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-3 col-sm-6">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.Lifestyle == "luxury" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="Lifestyle" value="luxury" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif">Haute Horlogerie</div>
+                                    <small class="text-muted">Black-tie galas, boardrooms, legacy collectors</small>
+                                </label>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.Lifestyle == "daily" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="Lifestyle" value="daily" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif">Daily Mechanical</div>
+                                    <small class="text-muted">Self-winding automatic kinetic precision</small>
+                                </label>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.Lifestyle == "racing" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="Lifestyle" value="racing" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif">Sport & Racing</div>
+                                    <small class="text-muted">Split-second tachymeter chronographs</small>
+                                </label>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.Lifestyle == "smart" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="Lifestyle" value="smart" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif">Connected Horizon</div>
+                                    <small class="text-muted">Smart hybrid, biometric connectivity</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Budget Range -->
+                    <div class="mb-5">
+                        <h4 class="font-serif fw-bold mb-3 d-flex align-items-center gap-2">
+                            <span class="badge bg-dark rounded-pill">3</span>
+                            <span>What is your investment range?</span>
+                        </h4>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.BudgetRange == "under30k" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="BudgetRange" value="under30k" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif fs-5">Under ₹30,000</div>
+                                    <small class="text-muted">Entry luxury, ultra-slim quartz, skeleton automatics</small>
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.BudgetRange == "30k-100k" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="BudgetRange" value="30k-100k" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif fs-5">₹30,000 – ₹1,00,000</div>
+                                    <small class="text-muted">Japanese mechanical masters, solar MT-G chronographs</small>
+                                </label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="card p-3 border text-center h-100 cursor-pointer wizard-card @(Model.BudgetRange == "above100k" ? "border-dark bg-cream-subtle" : "")">
+                                    <input type="radio" asp-for="BudgetRange" value="above100k" class="form-check-input mb-2" />
+                                    <div class="fw-bold font-serif fs-5">Above ₹1,00,000</div>
+                                    <small class="text-muted">Swiss Haute Horlogerie (Rolex, Omega Master Chronometers)</small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-luxury-primary px-5 py-3 fw-bold fs-5 shadow">
+                            <i class="bi bi-sparkles me-2"></i> Reveal Bespoke Recommendations
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations Result Section -->
+    @if (Model.HasSearched)
+    {
+        <div class="border-top pt-5">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <span class="badge-accent mb-2">Concierge Curation</span>
+                    <h2 class="display-6 fw-bold font-serif mb-0">Recommended for Your Wrist</h2>
+                </div>
+                <span class="text-muted">@Model.RecommendedWatches.Count matching timepiece(s)</span>
+            </div>
+
+            @if (!Model.RecommendedWatches.Any())
+            {
+                <div class="card luxury-card text-center py-5">
+                    <h4 class="font-serif fw-bold">No exact match for this bespoke combination</h4>
+                    <p class="text-muted mb-3">Try widening your investment range or exploring our complete horological catalog.</p>
+                    <a asp-controller="Watches" asp-action="Index" class="btn btn-luxury-primary">View Full Catalog</a>
+                </div>
+            }
+            else
+            {
+                <div class="row g-4">
+                    @foreach (var watch in Model.RecommendedWatches)
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <partial name="_WatchCard" model="watch" />
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,164 @@
+@model TimeVerse.ViewModels.Orders.OrderDetailsViewModel
+@{
+    ViewData["Title"] = "Order #" + Model.OrderNumber + " — Sales Desk";
+}
+
+<div class="luxury-container py-4">
+    <nav class="breadcrumb-nav mb-3" aria-label="breadcrumb">
+        <a asp-area="Sales" asp-controller="Dashboard" asp-action="Index">Sales Desk</a>
+        <span class="separator">/</span>
+        <a asp-area="Sales" asp-controller="Orders" asp-action="Index">Customer Orders</a>
+        <span class="separator">/</span>
+        <span class="current">#@Model.OrderNumber</span>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3 flex-wrap gap-3">
+        <div>
+            <span class="tv-badge tv-badge-lime mb-2 d-inline-block">Order Details</span>
+            <h1 class="display-6 fw-bold mb-1">Order #@Model.OrderNumber</h1>
+            <p class="text-muted mb-0">Ordered on @Model.OrderDate.ToString("dd MMMM yyyy, hh:mm tt")</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Orders" asp-action="Invoice" asp-route-id="@Model.Id" target="_blank" class="btn btn-outline-dark">
+                <i class="bi bi-printer me-1"></i> Print Invoice
+            </a>
+            <a asp-area="Sales" asp-controller="Orders" asp-action="Index" class="tv-btn-primary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Orders
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 border" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4 border" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row g-4">
+        <!-- Left Column: Items Breakdown and Shipping Destination -->
+        <div class="col-lg-8">
+            <!-- Items Card -->
+            <div class="luxury-card mb-4" style="background: var(--tv-white);">
+                <div class="p-3 border-bottom bg-light">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-box-seam me-1"></i> Ordered Watches</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Watch</th>
+                                <th class="text-center">SKU</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Unit Price</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="@item.ImageUrl" alt="@item.WatchName" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;" />
+                                            <div>
+                                                <div class="fw-bold">@item.WatchName</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center font-monospace small">@item.SKU</td>
+                                    <td class="text-center fw-bold">@item.Quantity</td>
+                                    <td class="text-end">₹@item.UnitPrice.ToString("N0")</td>
+                                    <td class="text-end fw-bold">₹@item.TotalPrice.ToString("N0")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Total Amount:</td>
+                                <td class="text-end fw-bold fs-6">₹@Model.FinalAmount.ToString("N0")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Customer & Delivery Destination -->
+            <div class="luxury-card p-4" style="background: var(--tv-white);">
+                <h5 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-geo-alt me-1"></i> Delivery Address</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <span class="text-muted small text-uppercase d-block">Recipient Name</span>
+                        <div class="fw-bold fs-6">@Model.ShippingFullName</div>
+                        <div><i class="bi bi-telephone text-muted me-1"></i> @Model.ShippingPhone</div>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="text-muted small text-uppercase d-block">Delivery Destination</span>
+                        <div>@Model.ShippingAddressLine1</div>
+                        @if (!string.IsNullOrEmpty(Model.ShippingAddressLine2))
+                        {
+                            <div>@Model.ShippingAddressLine2</div>
+                        }
+                        <div>@Model.ShippingCity, @Model.ShippingState — @Model.ShippingPostalCode</div>
+                        <div>@Model.ShippingCountry</div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <div class="col-12 mt-3 pt-3 border-top">
+                            <span class="text-muted small text-uppercase">Customer Notes</span>
+                            <p class="mb-0 bg-light p-3 rounded">@Model.Notes</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Status Management & Tracking -->
+        <div class="col-lg-4">
+            <div class="luxury-card p-4 mb-4" style="background: var(--tv-white);">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">Update Order Status</h5>
+
+                <form asp-area="Sales" asp-controller="Orders" asp-action="UpdateStatus" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Order Status</label>
+                        <select name="newStatus" class="form-select">
+                            @foreach (var status in Enum.GetValues<TimeVerse.Models.OrderStatus>())
+                            {
+                                <option value="@status" selected="@(Model.Status == status)">@status</option>
+                            }
+                        </select>
+                        <small class="text-muted">Setting to 'Cancelled' automatically restores stock.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Tracking Number</label>
+                        <input type="text" name="trackingNumber" value="@Model.TrackingNumber" class="form-control font-monospace" placeholder="e.g. TRK-TV-2026-9921" />
+                        <small class="text-muted">Assigned courier airway bill or delivery tracking number.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="text-muted small text-uppercase d-block mb-1">Payment Method & Status</span>
+                        <div class="fw-bold">@Model.PaymentMethod</div>
+                        <span class="badge bg-success" style="font-size: 0.75rem; padding: 4px 8px;">@Model.PaymentStatus</span>
+                    </div>
+
+                    <button type="submit" class="tv-btn-primary w-100 py-2 fw-bold">
+                        <i class="bi bi-check2-circle me-1"></i> Save Status
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,279 @@
+@using TimeVerse.Data
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — TimeVerse | The Universe of Time</title>
+    <meta name="description" content="TimeVerse — Simple luxury watch e-commerce website offering authentic, timeless timepieces." />
+
+    <!-- Google Fonts: Poppins (Headings/Nav/Buttons) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
+    <link rel="shortcut icon" href="~/favicon.svg" />
+    <!-- TimeVerse Custom Luxury Design System -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- PHASE 1.1: NAVBAR (Sticky, Responsive, Clean) -->
+    <header class="tv-navbar">
+        <div class="container-xl">
+            <div class="d-flex align-items-center justify-content-between">
+                <!-- Brand Identity (Left: TimeVerse Logo & Name) -->
+                <a class="tv-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/images/timeverse-emblem.svg" alt="TimeVerse Emblem" class="tv-brand-logo-img" />
+                    <div class="tv-brand-text">
+                        <span class="tv-brand-name">Time<span class="verse-highlight">Verse</span></span>
+                        <span class="tv-brand-tagline d-none d-md-block">The Universe of Time</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="d-none d-lg-flex align-items-center gap-1">
+                    <a class="tv-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="tv-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Shop" || ViewContext.RouteData.Values["controller"]?.ToString() == "Watches" ? "active" : "")" href="/shop">Watches</a>
+                    <a class="tv-nav-link" href="/#categories">Categories</a>
+                    <a class="tv-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "About" ? "active" : "")" asp-area="" asp-controller="About" asp-action="Index">About</a>
+                    <a class="tv-nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")" asp-area="" asp-controller="Contact" asp-action="Index">Contact</a>
+                </nav>
+
+                <!-- Navigation Right: Search, Cart, Login/Profile -->
+                <div class="tv-nav-actions">
+                    <!-- Search Icon -->
+                    <a href="/shop" class="tv-action-btn" title="Search Watches" aria-label="Search">
+                        <i class="bi bi-search"></i>
+                    </a>
+
+                    <!-- Wishlist Icon with Live Counter (Phase 2.7) -->
+                    <a href="/wishlist" class="tv-action-btn" title="My Wishlist" aria-label="Wishlist">
+                        <i class="bi bi-heart"></i>
+                        <span id="tvWishlistBadge" class="tv-badge-count">0</span>
+                    </a>
+
+                    <!-- Cart Icon with Live Counter (Phase 2.6) -->
+                    <a href="/cart" class="tv-action-btn" title="Shopping Cart" aria-label="Cart">
+                        <i class="bi bi-bag"></i>
+                        <span id="tvCartBadge" class="tv-badge-count">0</span>
+                    </a>
+
+                    <!-- Login / Profile Trigger -->
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="dropdown">
+                            <button class="tv-action-btn dropdown-toggle text-decoration-none" type="button" id="userMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-fill"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="userMenuBtn" style="background: var(--tv-secondary); border: 1px solid var(--tv-border-dark); min-width: 220px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                                <li class="px-2 py-1 text-muted border-bottom mb-2" style="font-size: 0.75rem; border-color: rgba(255,255,255,0.1) !important;">
+                                    Signed in as:<br />
+                                    <strong class="text-white">@User.Identity.Name</strong>
+                                </li>
+
+                                @if (User.IsInRole(RoleConstants.Admin))
+                                {
+                                    <li><span class="dropdown-header text-uppercase" style="color: var(--tv-accent); font-size: 0.72rem; letter-spacing: 0.08em;">Admin Control</span></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Watches" asp-action="Index"><i class="bi bi-watch me-2"></i>Manage Watches</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags me-2"></i>Categories</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Brands" asp-action="Index"><i class="bi bi-building me-2"></i>Brands</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Orders" asp-action="Index"><i class="bi bi-box-seam me-2"></i>Customer Orders</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Users" asp-action="Index"><i class="bi bi-people me-2"></i>User Accounts</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Reviews" asp-action="Index"><i class="bi bi-chat-heart me-2"></i>Customer Reviews</a></li>
+                                }
+                                else if (User.IsInRole(RoleConstants.SalesPerson))
+                                {
+                                    <li><span class="dropdown-header text-uppercase" style="color: var(--tv-accent); font-size: 0.72rem; letter-spacing: 0.08em;">Sales Control</span></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Sales" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-2"></i>Sales Dashboard</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Watches" asp-action="Index"><i class="bi bi-watch me-2"></i>Manage Watches</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Watches" asp-action="Create"><i class="bi bi-plus-circle me-2"></i>Add New Watch</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Categories" asp-action="Index"><i class="bi bi-tags me-2"></i>Categories</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Admin" asp-controller="Brands" asp-action="Index"><i class="bi bi-building me-2"></i>Brands</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Sales" asp-controller="Orders" asp-action="Index"><i class="bi bi-truck me-2"></i>Manage Orders</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Sales" asp-controller="Stock" asp-action="Index"><i class="bi bi-boxes me-2"></i>Stock Lookup</a></li>
+                                }
+                                else
+                                {
+                                    <li><span class="dropdown-header text-uppercase" style="color: var(--tv-accent); font-size: 0.72rem; letter-spacing: 0.08em;">Customer Account</span></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Customer" asp-controller="Profile" asp-action="Index"><i class="bi bi-person me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item text-white" href="/wishlist"><i class="bi bi-heart me-2"></i>My Wishlist</a></li>
+                                    <li><a class="dropdown-item text-white" href="/cart"><i class="bi bi-bag me-2"></i>My Cart</a></li>
+                                    <li><a class="dropdown-item text-white" asp-area="Customer" asp-controller="Orders" asp-action="Index"><i class="bi bi-bag-check me-2"></i>My Orders</a></li>
+                                }
+
+                                <li class="border-top mt-2 pt-2" style="border-color: rgba(255,255,255,0.1) !important;">
+                                    <form method="post" asp-area="" asp-controller="Account" asp-action="Logout">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="Account" asp-action="Login" class="tv-action-btn" title="Login / Register" aria-label="Login">
+                            <i class="bi bi-person"></i>
+                        </a>
+                    }
+
+                    <!-- Mobile Hamburger Menu Toggle -->
+                    <button class="tv-action-btn d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#tvMobileMenu" aria-controls="tvMobileMenu" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Collapsible Menu -->
+            <div class="collapse d-lg-none mt-3" id="tvMobileMenu">
+                <div class="p-3 rounded" style="background: var(--tv-secondary); border: 1px solid var(--tv-border-dark);">
+                    <div class="d-flex flex-column gap-2">
+                        <a class="tv-nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="tv-nav-link text-white" href="/shop">Watches</a>
+                        <a class="tv-nav-link text-white" href="/wishlist">Wishlist</a>
+                        <a class="tv-nav-link text-white" href="/cart">Cart</a>
+                        <a class="tv-nav-link text-white" href="/#categories">Categories</a>
+                        <a class="tv-nav-link text-white" asp-area="" asp-controller="About" asp-action="Index">About</a>
+                        <a class="tv-nav-link text-white" asp-area="" asp-controller="Contact" asp-action="Index">Contact</a>
+                        
+                        <hr style="border-color: rgba(255,255,255,0.15);" />
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            @if (User.IsInRole(RoleConstants.Admin))
+                            {
+                                <a class="tv-nav-link text-warning" asp-area="Admin" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                                <a class="tv-nav-link text-white" asp-area="Admin" asp-controller="Watches" asp-action="Index"><i class="bi bi-watch me-1"></i> Watches</a>
+                                <a class="tv-nav-link text-white" asp-area="Admin" asp-controller="Orders" asp-action="Index"><i class="bi bi-box-seam me-1"></i> Orders</a>
+                                <a class="tv-nav-link text-white" asp-area="Admin" asp-controller="Users" asp-action="Index"><i class="bi bi-people me-1"></i> Users</a>
+                                <a class="tv-nav-link text-white" asp-area="Admin" asp-controller="Reviews" asp-action="Index"><i class="bi bi-chat-heart me-1"></i> Reviews</a>
+                            }
+                            else if (User.IsInRole(RoleConstants.SalesPerson))
+                            {
+                                <a class="tv-nav-link text-info" asp-area="Sales" asp-controller="Dashboard" asp-action="Index"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                                <a class="tv-nav-link text-white" asp-area="Sales" asp-controller="Orders" asp-action="Index"><i class="bi bi-truck me-1"></i> Orders</a>
+                                <a class="tv-nav-link text-white" asp-area="Sales" asp-controller="Stock" asp-action="Index"><i class="bi bi-boxes me-1"></i> Stock</a>
+                            }
+                            else
+                            {
+                                <a class="tv-nav-link text-white" asp-area="Customer" asp-controller="Profile" asp-action="Index">Profile</a>
+                                <a class="tv-nav-link text-white" asp-area="Customer" asp-controller="Home" asp-action="Index">Dashboard</a>
+                            }
+                            <form method="post" asp-area="" asp-controller="Account" asp-action="Logout">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-link text-danger text-start p-0 ps-3">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="tv-nav-link text-white" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                            <a class="tv-nav-link text-white" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- Global Toast Container -->
+    <div class="tv-toast-container"></div>
+
+    <!-- PHASE 1.9: FOOTER (Simple, Compact, Premium) -->
+    <footer class="tv-footer">
+        <div class="container-xl">
+            <div class="row g-4 mb-4">
+                <!-- Column 1: Brand & Tagline -->
+                <div class="col-lg-4 col-md-6">
+                    <a class="tv-brand mb-3" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/images/timeverse-emblem.svg" alt="TimeVerse Emblem" class="tv-brand-logo-img" style="height: 44px;" />
+                        <div class="tv-brand-text">
+                            <span class="tv-brand-name" style="font-size: 1.5rem;">Time<span class="verse-highlight">Verse</span></span>
+                            <span class="tv-brand-tagline">The Universe of Time</span>
+                        </div>
+                    </a>
+                    <p class="tv-footer-desc mb-3">
+                        Timeless luxury watch curation for every defining moment.
+                    </p>
+                    <!-- Optional Social Icons -->
+                    <div class="d-flex gap-2">
+                        <a href="#" class="tv-social-btn" title="Instagram" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="tv-social-btn" title="Facebook" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="tv-social-btn" title="Twitter" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="tv-social-btn" title="YouTube" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Navigation Links -->
+                <div class="col-lg-3 col-md-6 col-6">
+                    <h6 class="tv-footer-title">Navigation</h6>
+                    <ul class="tv-footer-links">
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li><a href="/shop">Watches</a></li>
+                        <li><a href="/wishlist">Wishlist</a></li>
+                        <li><a href="/cart">Cart</a></li>
+                        <li><a href="/#categories">Categories</a></li>
+                        <li><a asp-area="" asp-controller="About" asp-action="Index">About</a></li>
+                        <li><a asp-area="" asp-controller="Contact" asp-action="Index">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Legal & Policies -->
+                <div class="col-lg-2 col-md-6 col-6">
+                    <h6 class="tv-footer-title">Legal</h6>
+                    <ul class="tv-footer-links">
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Support & Assistance -->
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="tv-footer-title">Support</h6>
+                    <ul class="tv-footer-links">
+                        <li><a asp-area="" asp-controller="Contact" asp-action="Index">Contact Us</a></li>
+                        <li><a href="/help">Help &amp; FAQs</a></li>
+                    </ul>
+                    <div class="mt-2 text-muted" style="font-size: 0.82rem;">
+                        <i class="bi bi-shield-check text-warning me-1"></i> 100% Authentic Watches
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Bar -->
+            <div class="tv-footer-bottom">
+                <div class="text-muted" style="font-size: 0.82rem;">
+                    &copy; @DateTime.UtcNow.Year TimeVerse. All rights reserved. The Universe of Time.
+                </div>
+                <div class="d-flex gap-3" style="font-size: 0.82rem;">
+                    <a href="/privacy" class="text-muted">Privacy</a>
+                    <a href="/terms" class="text-muted">Terms</a>
+                    <a href="/help" class="text-muted">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle & jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/api-client.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

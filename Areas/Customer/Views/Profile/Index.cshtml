@@ -1,0 +1,76 @@
+@model TimeVerse.ViewModels.Account.ProfileViewModel
+@{
+    ViewData["Title"] = "Collector Profile Details — TIMEVERSE";
+}
+
+<section class="tv-catalog-header" style="padding: 2.5rem 0 2rem;">
+    <div class="container-xl">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <span class="tv-section-tag">Patron Identity</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">MANAGE PROFILE</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Update your personal details and contact numbers for delivery dispatches.</p>
+            </div>
+            <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="tv-btn-outline-light" style="padding: 0.5rem 1rem;">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="tv-section-light" style="padding: 3rem 0 5rem;">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="p-4 p-md-5 rounded" style="background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+                    @if (Model.Succeeded)
+                    {
+                        <div class="alert alert-success p-3 rounded mb-4">
+                            <i class="bi bi-check-circle-fill text-success me-1"></i>
+                            <strong>@Model.Message</strong>
+                        </div>
+                    }
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 mb-3" style="font-size: 0.85rem;"></div>
+
+                    <form method="post" asp-area="Customer" asp-controller="Profile" asp-action="Index">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="FirstName" class="tv-input" />
+                                <span asp-validation-for="FirstName" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="LastName" class="tv-input" />
+                                <span asp-validation-for="LastName" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <input asp-for="Email" class="tv-input" readonly style="background: var(--tv-cream-soft); cursor: not-allowed;" />
+                            <div class="text-muted" style="font-size: 0.75rem;">Email address is bound to your vault identity and cannot be changed directly.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="PhoneNumber" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <input asp-for="PhoneNumber" class="tv-input" placeholder="+91 98000 00000" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <button type="submit" class="tv-btn-primary w-100" style="padding: 0.85rem;">
+                            <i class="bi bi-save"></i> Save Profile Updates
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

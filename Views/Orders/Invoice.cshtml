@@ -1,0 +1,234 @@
+@model TimeVerse.ViewModels.Orders.OrderDetailsViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tax Invoice — @Model.OrderNumber — TimeVerse</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream: #FAF8F0;
+            --charcoal: #1C1C1A;
+            --lime: #8BE000;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8f9fa;
+            color: #1c1c1a;
+            padding: 30px 15px;
+        }
+        .invoice-card {
+            max-width: 860px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 1px solid #e5e5e0;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            position: relative;
+        }
+        .invoice-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--charcoal) 0%, var(--lime) 100%);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .font-serif {
+            font-family: 'Cinzel', serif;
+        }
+        .table th {
+            background-color: #f7f6f0;
+            color: #1c1c1a;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 7rem;
+            color: rgba(28, 28, 26, 0.03);
+            font-family: 'Cinzel', serif;
+            font-weight: 800;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+        }
+        @@media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .invoice-card {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="text-center mb-4 no-print">
+        <button onclick="window.print()" class="btn btn-dark px-4 py-2 me-2">
+            <i class="bi bi-printer me-2"></i> Print Official Tax Invoice
+        </button>
+        <button onclick="window.close()" class="btn btn-outline-secondary px-4 py-2">
+            Close Window
+        </button>
+    </div>
+
+    <div class="invoice-card">
+        <div class="watermark">TIMEVERSE VAULT</div>
+
+        <!-- Invoice Header -->
+        <div class="d-flex justify-content-between align-items-start border-bottom pb-4 mb-4">
+            <div>
+                <h2 class="font-serif fw-bold mb-1" style="letter-spacing: 2px;">TIMEVERSE</h2>
+                <div class="small text-muted text-uppercase" style="letter-spacing: 1px;">The Universe of Time</div>
+                <div class="small text-muted mt-2">
+                    TimeVerse Horology Private Limited<br />
+                    101, Haute Horlogerie Tower, Bandra Kurla Complex<br />
+                    Mumbai, Maharashtra 400051, India<br />
+                    GSTIN: 27AABCT9981M1Z5 | CIN: U52100MH2026PTC109981<br />
+                    concierge@timeverse.com | +91 22 4900 8000
+                </div>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-dark text-uppercase px-3 py-2 fs-6 mb-2">ORIGINAL FOR RECIPIENT</span>
+                <h4 class="font-serif fw-bold text-muted mb-1">TAX INVOICE</h4>
+                <div class="fw-bold fs-5 text-dark">#@Model.OrderNumber</div>
+                <div class="small text-muted">Date: @Model.OrderDate.ToString("dd MMMM yyyy")</div>
+                <div class="small text-muted">Tracking: @Model.TrackingNumber</div>
+            </div>
+        </div>
+
+        <!-- Billing & Shipping Information -->
+        <div class="row g-4 mb-4">
+            <div class="col-sm-6">
+                <h6 class="font-serif fw-bold text-uppercase small text-muted mb-2">Billed & Shipped To</h6>
+                <div class="fw-bold fs-6">@Model.ShippingFullName</div>
+                <div class="text-muted small">
+                    @Model.ShippingAddressLine1<br />
+                    @if (!string.IsNullOrEmpty(Model.ShippingAddressLine2))
+                    {
+                        @Model.ShippingAddressLine2<br />
+                    }
+                    @Model.ShippingCity, @Model.ShippingState — @Model.ShippingPostalCode<br />
+                    @Model.ShippingCountry<br />
+                    Telephone: @Model.ShippingPhone
+                </div>
+            </div>
+            <div class="col-sm-6 text-sm-end">
+                <h6 class="font-serif fw-bold text-uppercase small text-muted mb-2">Settlement Details</h6>
+                <div class="small">
+                    <strong>Payment Mode:</strong> @Model.PaymentMethod<br />
+                    <strong>Payment Status:</strong> <span class="badge bg-success-subtle text-success border">@Model.PaymentStatus</span><br />
+                    <strong>Ledger State:</strong> @Model.Status<br />
+                    <strong>Dispatch Tier:</strong> Armored Courier Insured
+                </div>
+            </div>
+        </div>
+
+        <!-- Table of Items -->
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;" class="text-center">#</th>
+                        <th>Timepiece & Horological Specification</th>
+                        <th style="width: 140px;" class="text-center">SKU</th>
+                        <th style="width: 80px;" class="text-center">Qty</th>
+                        <th style="width: 130px;" class="text-end">Unit Price</th>
+                        <th style="width: 140px;" class="text-end">Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int idx = 1; }
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td class="text-center">@(idx++)</td>
+                            <td>
+                                <div class="fw-bold font-serif">@item.WatchName</div>
+                                <div class="text-muted small">Certified Authenticity Guaranteed • International Warranty Bound</div>
+                            </td>
+                            <td class="text-center font-monospace small">@item.SKU</td>
+                            <td class="text-center fw-semibold">@item.Quantity</td>
+                            <td class="text-end">₹@item.UnitPrice.ToString("N2")</td>
+                            <td class="text-end fw-bold">₹@item.TotalPrice.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" rowspan="4" class="align-top p-3 bg-light">
+                            <div class="small text-muted">
+                                <strong>Declaration:</strong><br />
+                                We declare that this invoice shows the actual price of the horological instruments described and that all particulars are true and correct. Goods once sold are covered under TimeVerse Master Horology International Warranty.
+                            </div>
+                        </td>
+                        <td class="text-end fw-bold">Subtotal:</td>
+                        <td class="text-end">₹@Model.TotalAmount.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td class="text-end fw-bold">Armored Courier:</td>
+                        <td class="text-end">
+                            @if (Model.ShippingFee == 0)
+                            {
+                                <span>Complimentary</span>
+                            }
+                            else
+                            {
+                                <span>₹@Model.ShippingFee.ToString("N2")</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-end fw-bold">GST (18% Incl.):</td>
+                        <td class="text-end">₹@((Model.TotalAmount * 0.18m / 1.18m).ToString("N2"))</td>
+                    </tr>
+                    <tr class="table-light">
+                        <td class="text-end fw-bold font-serif fs-6">Grand Total:</td>
+                        <td class="text-end fw-bold font-serif fs-5 text-dark">₹@Model.FinalAmount.ToString("N2")</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Authorization Sign-off -->
+        <div class="d-flex justify-content-between align-items-end pt-4 border-top mt-4">
+            <div class="small text-muted">
+                Questions? Contact TimeVerse Concierge: <strong>support@timeverse.com</strong><br />
+                This is a digitally generated tamper-evident invoice.
+            </div>
+            <div class="text-center" style="width: 220px;">
+                <div class="font-serif fw-bold" style="color: #68B800;">[DIGITALLY SEALED]</div>
+                <div class="border-top pt-1 mt-3 small text-muted text-uppercase">
+                    Authorized Signatory<br />
+                    TimeVerse Vault Registrar
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

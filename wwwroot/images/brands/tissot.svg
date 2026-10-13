@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 150" width="100%" height="100%">
+  <!-- Tissot Swiss emblem -->
+  <g transform="translate(150, 42)">
+    <rect x="-16" y="-16" width="32" height="32" rx="4" fill="#E30613" />
+    <path d="M-3,-11 L3,-11 L3,-3 L11,-3 L11,3 L3,3 L3,11 L-3,11 L-3,3 L-11,3 L-11,-3 L-3,-3 Z" fill="#FFFFFF" />
+  </g>
+  <text x="150" y="98" text-anchor="middle" font-family="'Helvetica Neue', 'Arial', sans-serif" font-weight="900" font-size="28" letter-spacing="4" fill="#1C1C1A">
+    TISSOT
+  </text>
+  <text x="150" y="122" text-anchor="middle" font-family="'Helvetica Neue', 'Arial', sans-serif" font-weight="600" font-size="11" letter-spacing="4" fill="#64748B">
+    SWISS 1853
+  </text>
+</svg>

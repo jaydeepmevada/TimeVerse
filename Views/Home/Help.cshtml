@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Help & FAQs";
+}
+
+<div class="container-xl py-5" style="margin-top: 40px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="h2 fw-bold mb-4" style="color: var(--tv-primary);">Help &amp; FAQs</h1>
+            <div class="bg-white p-4 rounded shadow-sm border mb-4">
+                <h5 class="fw-bold mb-2">How do I place an order?</h5>
+                <p class="text-muted mb-4">
+                    Browse our catalog, select your favorite timepiece, click "Add to Cart", and proceed to checkout. You can review your order details before final confirmation.
+                </p>
+
+                <h5 class="fw-bold mb-2">How can I track my order?</h5>
+                <p class="text-muted mb-4">
+                    Once placed, you can track your order status in real time from your Customer Dashboard under "My Orders".
+                </p>
+
+                <h5 class="fw-bold mb-2">Are all watches original?</h5>
+                <p class="text-muted mb-0">
+                    Yes. TimeVerse ensures 100% genuine watches with official manufacturer warranty and serial number verification.
+                </p>
+            </div>
+            <div class="text-center">
+                <a asp-controller="Contact" asp-action="Index" class="tv-btn-primary">
+                    <i class="bi bi-chat-dots me-1"></i> Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

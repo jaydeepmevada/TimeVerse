@@ -1,0 +1,218 @@
+@model List<TimeVerse.ViewModels.Orders.OrderDetailsViewModel>
+@{
+    ViewData["Title"] = "Customer Orders — Admin";
+    var currentStatus = ViewBag.CurrentStatus as TimeVerse.Models.OrderStatus?;
+    var search = ViewBag.Search as string;
+    var dateFilter = ViewBag.DateFilter as string;
+}
+
+<!-- Admin Console Header -->
+<section class="tv-catalog-header" style="padding: 2rem 0 1.5rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="tv-badge tv-badge-lime mb-2">Order Management</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">CUSTOMER ORDERS</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Monitor, audit, and fulfill all customer timepiece transactions.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="tv-btn-outline-light" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-speedometer2"></i> Overview</a>
+            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-watch"></i> Watches</a>
+            <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-building"></i> Brands</a>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-tags"></i> Categories</a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-box-seam"></i> Orders</a>
+            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-people"></i> Users</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-box-arrow-up-right"></i> View Storefront</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4.5rem;">
+    <div class="container-xl">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-4 border" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4 border" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Status Filter Pills -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == null ? "btn-dark text-white" : "btn-outline-dark")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                All Orders <span class="badge bg-secondary ms-1">@ViewBag.TotalCount</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@TimeVerse.Models.OrderStatus.Pending" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == TimeVerse.Models.OrderStatus.Pending ? "btn-warning text-dark" : "btn-outline-warning text-dark")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Pending <span class="badge bg-warning text-dark ms-1">@ViewBag.PendingCount</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@TimeVerse.Models.OrderStatus.Confirmed" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == TimeVerse.Models.OrderStatus.Confirmed ? "btn-primary text-white" : "btn-outline-primary")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Confirmed <span class="badge bg-primary text-white ms-1">@ViewBag.ConfirmedCount</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@TimeVerse.Models.OrderStatus.Processing" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == TimeVerse.Models.OrderStatus.Processing ? "btn-info text-white" : "btn-outline-info")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Processing <span class="badge bg-info text-white ms-1">@ViewBag.ProcessingCount</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@TimeVerse.Models.OrderStatus.Shipped" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == TimeVerse.Models.OrderStatus.Shipped ? "btn-secondary text-white" : "btn-outline-secondary")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Shipped <span class="badge bg-secondary text-white ms-1">@ViewBag.ShippedCount</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@TimeVerse.Models.OrderStatus.Delivered" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == TimeVerse.Models.OrderStatus.Delivered ? "btn-success text-white" : "btn-outline-success")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Delivered <span class="badge bg-success text-white ms-1">@ViewBag.DeliveredCount</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" asp-route-status="@TimeVerse.Models.OrderStatus.Cancelled" asp-route-search="@search" asp-route-dateFilter="@dateFilter"
+               class="btn btn-sm @(currentStatus == TimeVerse.Models.OrderStatus.Cancelled ? "btn-danger text-white" : "btn-outline-danger")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Cancelled <span class="badge bg-danger text-white ms-1">@ViewBag.CancelledCount</span>
+            </a>
+        </div>
+
+        <!-- Search and Date Filter Bar -->
+        <div class="luxury-card p-3 mb-4" style="background: var(--tv-white);">
+            <form method="get" asp-area="Admin" asp-controller="Orders" asp-action="Index" class="row g-2 align-items-center">
+                @if (currentStatus.HasValue)
+                {
+                    <input type="hidden" name="status" value="@currentStatus" />
+                }
+                <div class="col-md-6 col-lg-7">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" value="@search" class="form-control border-start-0" placeholder="Search by Order #, Customer Name, Email, or City..." />
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <select name="dateFilter" class="form-select">
+                        <option value="">All Dates</option>
+                        <option value="today" selected="@(dateFilter == "today")">Today</option>
+                        <option value="week" selected="@(dateFilter == "week")">Past 7 Days</option>
+                        <option value="month" selected="@(dateFilter == "month")">Past 30 Days</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-lg-2 d-flex gap-2">
+                    <button type="submit" class="tv-btn-primary w-100 py-2">Filter</button>
+                    @if (!string.IsNullOrEmpty(search) || !string.IsNullOrEmpty(dateFilter) || currentStatus.HasValue)
+                    {
+                        <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-x-lg"></i></a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="luxury-card p-0" style="background: var(--tv-white); overflow: hidden;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="padding-left: 1.25rem;">Order Reference</th>
+                            <th>Customer & Location</th>
+                            <th>Order Date</th>
+                            <th class="text-center">Items</th>
+                            <th class="text-end">Total Amount</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Tracking #</th>
+                            <th class="text-end" style="padding-right: 1.25rem;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox display-4 d-block mb-2"></i>
+                                    No customer orders found matching your search or filter.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var o in Model)
+                        {
+                            <tr>
+                                <td style="padding-left: 1.25rem;">
+                                    <div class="fw-bold font-monospace" style="color: var(--tv-primary);">@o.OrderNumber</div>
+                                    <small class="text-muted">ID: #@o.Id</small>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@o.ShippingFullName</div>
+                                    <small class="text-muted"><i class="bi bi-geo-alt"></i> @o.ShippingCity, @o.ShippingCountry</small>
+                                </td>
+                                <td>
+                                    <div>@o.OrderDate.ToString("dd MMM yyyy")</div>
+                                    <small class="text-muted">@o.OrderDate.ToString("hh:mm tt")</small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border">@o.Items.Sum(i => i.Quantity) watch(es)</span>
+                                </td>
+                                <td class="text-end fw-bold" style="color: var(--tv-primary);">
+                                    ₹@o.TotalAmount.ToString("N2")
+                                </td>
+                                <td class="text-center">
+                                    @switch (o.Status)
+                                    {
+                                        case TimeVerse.Models.OrderStatus.Pending:
+                                            <span class="badge bg-warning text-dark px-2 py-1">Pending</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Confirmed:
+                                            <span class="badge bg-primary text-white px-2 py-1">Confirmed</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Processing:
+                                            <span class="badge bg-info text-white px-2 py-1">Processing</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Shipped:
+                                            <span class="badge bg-secondary text-white px-2 py-1">Shipped</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Delivered:
+                                            <span class="badge bg-success text-white px-2 py-1">Delivered</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Cancelled:
+                                            <span class="badge bg-danger text-white px-2 py-1">Cancelled</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">@o.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrWhiteSpace(o.TrackingNumber))
+                                    {
+                                        <span class="font-monospace small text-primary"><i class="bi bi-truck me-1"></i>@o.TrackingNumber</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">—</span>
+                                    }
+                                </td>
+                                <td class="text-end" style="padding-right: 1.25rem;">
+                                    <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id" class="tv-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">
+                                        <i class="bi bi-eye"></i> Manage
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,201 @@
+@model TimeVerse.ViewModels.Admin.EditWatchViewModel
+@{
+    ViewData["Title"] = "Edit Watch — Admin";
+}
+
+<div class="luxury-container py-4">
+    <nav class="breadcrumb-nav mb-3" aria-label="breadcrumb">
+        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+        <span class="separator">/</span>
+        <a asp-area="Admin" asp-controller="Watches" asp-action="Index">Watches</a>
+        <span class="separator">/</span>
+        <span class="current">Edit Watch</span>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3 flex-wrap gap-3">
+        <div>
+            <span class="tv-badge tv-badge-lime mb-2 d-inline-block">Watch Store</span>
+            <h1 class="display-6 fw-bold mb-1">EDIT WATCH</h1>
+            <p class="text-muted mb-0">Update watch price, stock quantity, details, and photos for #@Model.SKU.</p>
+        </div>
+        <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-1"></i> Back to All Watches
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4 border" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form method="post" asp-area="Admin" asp-controller="Watches" asp-action="Edit" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="luxury-card p-4 p-md-5 mb-4" style="background: var(--tv-white);">
+            <h4 class="fw-bold mb-3 border-bottom pb-2">1. Watch Details</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-md-8">
+                    <label asp-for="Name" class="form-label small fw-bold">Watch Name <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="SKU" class="form-label small fw-bold">SKU Reference <span class="text-danger">*</span></label>
+                    <input asp-for="SKU" class="form-control" />
+                    <span asp-validation-for="SKU" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="BrandId" class="form-label small fw-bold">Brand <span class="text-danger">*</span></label>
+                    <select asp-for="BrandId" asp-items="Model.BrandList" class="form-select"></select>
+                    <span asp-validation-for="BrandId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CategoryId" class="form-label small fw-bold">Category <span class="text-danger">*</span></label>
+                    <select asp-for="CategoryId" asp-items="Model.CategoryList" class="form-select"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label small fw-bold">Description</label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-3 border-bottom pb-2">2. Price & Stock</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label asp-for="Price" class="form-label small fw-bold">Price (₹) <span class="text-danger">*</span></label>
+                    <input asp-for="Price" type="number" step="1" min="1" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="OriginalPrice" class="form-label small fw-bold">Original Price (₹)</label>
+                    <input asp-for="OriginalPrice" type="number" step="1" min="1" class="form-control" />
+                    <span asp-validation-for="OriginalPrice" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="StockQuantity" class="form-label small fw-bold">Stock Available <span class="text-danger">*</span></label>
+                    <input asp-for="StockQuantity" type="number" class="form-control" />
+                    <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="LowStockThreshold" class="form-label small fw-bold">Low Stock Alert Quantity</label>
+                    <input asp-for="LowStockThreshold" type="number" class="form-control" />
+                    <span asp-validation-for="LowStockThreshold" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-3 border-bottom pb-2">3. Watch Specifications</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label asp-for="MovementType" class="form-label small fw-bold">Watch Type / Movement</label>
+                    <select asp-for="MovementType" asp-items="Html.GetEnumSelectList<TimeVerse.Models.MovementType>()" class="form-select"></select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Gender" class="form-label small fw-bold">Gender</label>
+                    <select asp-for="Gender" asp-items="Html.GetEnumSelectList<TimeVerse.Models.WatchGender>()" class="form-select"></select>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="CaseSize" class="form-label small fw-bold">Case Size</label>
+                    <input asp-for="CaseSize" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="CaseMaterial" class="form-label small fw-bold">Case Material</label>
+                    <input asp-for="CaseMaterial" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="DialColor" class="form-label small fw-bold">Dial Color</label>
+                    <input asp-for="DialColor" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="StrapMaterial" class="form-label small fw-bold">Strap Material</label>
+                    <input asp-for="StrapMaterial" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="WaterResistance" class="form-label small fw-bold">Water Resistance</label>
+                    <input asp-for="WaterResistance" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="Warranty" class="form-label small fw-bold">Warranty</label>
+                    <input asp-for="Warranty" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="CountryOfOrigin" class="form-label small fw-bold">Country of Origin</label>
+                    <input asp-for="CountryOfOrigin" class="form-control" />
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-3 border-bottom pb-2">4. Badges & Tags</h4>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input asp-for="IsFeatured" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsFeatured" class="form-check-label fw-semibold">Featured</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input asp-for="IsBestSeller" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsBestSeller" class="form-check-label fw-semibold">Best Seller</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input asp-for="IsNewArrival" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsNewArrival" class="form-check-label fw-semibold">New Arrival</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input asp-for="IsLimitedEdition" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsLimitedEdition" class="form-check-label fw-semibold">Limited Edition</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsActive" class="form-check-label fw-semibold text-success">Active in Store</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Existing & New Images -->
+            <h4 class="fw-bold mb-3 border-bottom pb-2">5. Watch Photos</h4>
+            @if (Model.ExistingImages != null && Model.ExistingImages.Any())
+            {
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Current Photos</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var img in Model.ExistingImages)
+                        {
+                            <div class="border rounded p-2 text-center bg-light">
+                                <img src="@img" alt="Watch photo" class="rounded" style="width: 80px; height: 80px; object-fit: contain;" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <div class="mb-4">
+                <label asp-for="Images" class="form-label small fw-bold">Upload More Photos (.jpg, .png, .webp &lt; 5MB)</label>
+                <input asp-for="Images" type="file" multiple class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                <span asp-validation-for="Images" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+                <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn btn-outline-secondary" style="padding: 0.6rem 1.5rem;">Cancel</a>
+                <button type="submit" class="tv-btn-primary" style="padding: 0.6rem 1.8rem;">
+                    <i class="bi bi-check2-circle me-1"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

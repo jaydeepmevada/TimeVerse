@@ -1,0 +1,193 @@
+@model TimeVerse.ViewModels.Admin.AdminUserListViewModel
+@{
+    ViewData["Title"] = "User Accounts — Admin";
+}
+
+<!-- Admin Console Header -->
+<section class="tv-catalog-header" style="padding: 2rem 0 1.5rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="tv-badge tv-badge-lime mb-2">Access & Accounts</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">REGISTERED ACCOUNTS</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Manage store patrons, sales staff, and administrator credentials.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Admin" asp-controller="Users" asp-action="CreateSalesPerson" class="tv-btn-primary" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-person-plus"></i> Add Sales Representative
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-speedometer2"></i> Overview</a>
+            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-watch"></i> Watches</a>
+            <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-building"></i> Brands</a>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-tags"></i> Categories</a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-box-seam"></i> Orders</a>
+            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-people"></i> Users</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-box-arrow-up-right"></i> View Storefront</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4.5rem;">
+    <div class="container-xl">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-4 border" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4 border" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Filter & Search Bar -->
+        <div class="luxury-card p-3 mb-4" style="background: var(--tv-white);">
+            <form method="get" asp-area="Admin" asp-controller="Users" asp-action="Index" class="row g-2 align-items-center">
+                <div class="col-md-7 col-lg-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" value="@Model.Search" class="form-control border-start-0" placeholder="Search by name, email, or phone number..." />
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <select name="role" class="form-select">
+                        <option value="">All Roles</option>
+                        <option value="Customer" selected="@(Model.RoleFilter == "Customer")">Customers</option>
+                        <option value="SalesPerson" selected="@(Model.RoleFilter == "SalesPerson")">Sales Staff</option>
+                        <option value="Admin" selected="@(Model.RoleFilter == "Admin")">Administrators</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-lg-2 d-flex gap-2">
+                    <button type="submit" class="tv-btn-primary w-100 py-2">Search</button>
+                    @if (!string.IsNullOrEmpty(Model.Search) || !string.IsNullOrEmpty(Model.RoleFilter))
+                    {
+                        <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-x-lg"></i></a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <!-- Users Table -->
+        <div class="luxury-card p-0" style="background: var(--tv-white); overflow: hidden;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="padding-left: 1.25rem;">Patron / Name</th>
+                            <th>Contact Details</th>
+                            <th class="text-center">System Role</th>
+                            <th class="text-center">Orders Placed</th>
+                            <th class="text-center">Status</th>
+                            <th>Registered Date</th>
+                            <th class="text-end" style="padding-right: 1.25rem;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Users.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-person-x display-4 d-block mb-2"></i>
+                                    No registered accounts found matching your query.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr class="@(!user.IsActive ? "table-secondary text-muted" : "")">
+                                <td style="padding-left: 1.25rem;">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold" 
+                                             style="width: 36px; height: 36px; background: var(--tv-cream-soft); color: var(--tv-primary-dark); font-size: 0.85rem; border: 1px solid var(--tv-border);">
+                                            @(string.IsNullOrWhiteSpace(user.FullName) ? "U" : user.FullName.Substring(0, 1).ToUpper())
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold">@user.FullName</div>
+                                            <small class="text-muted font-monospace" style="font-size: 0.72rem;">ID: @user.Id.Substring(0, Math.Min(8, user.Id.Length))...</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div><i class="bi bi-envelope text-muted me-1"></i> @user.Email</div>
+                                    @if (!string.IsNullOrEmpty(user.PhoneNumber))
+                                    {
+                                        <small class="text-muted"><i class="bi bi-telephone me-1"></i> @user.PhoneNumber</small>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @switch (user.Role)
+                                    {
+                                        case TimeVerse.Data.RoleConstants.Admin:
+                                            <span class="badge bg-dark text-warning border px-2 py-1"><i class="bi bi-shield-lock me-1"></i>Administrator</span>
+                                            break;
+                                        case TimeVerse.Data.RoleConstants.SalesPerson:
+                                            <span class="badge bg-info text-dark px-2 py-1"><i class="bi bi-person-badge me-1"></i>Sales Rep</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-light text-dark border px-2 py-1">Customer</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (user.OrdersCount > 0)
+                                    {
+                                        <a asp-area="Admin" asp-controller="Users" asp-action="OrderHistory" asp-route-id="@user.Id" class="badge bg-primary text-decoration-none px-2 py-1">
+                                            @user.OrdersCount order(s)
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">0 orders</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success px-2 py-1">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger px-2 py-1">Suspended</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="small">@user.CreatedAt.ToString("dd MMM yyyy")</div>
+                                </td>
+                                <td class="text-end" style="padding-right: 1.25rem;">
+                                    <div class="d-inline-flex gap-2">
+                                        <a asp-area="Admin" asp-controller="Users" asp-action="OrderHistory" asp-route-id="@user.Id" class="btn btn-sm btn-outline-dark" title="View Customer Orders">
+                                            <i class="bi bi-clock-history"></i> Orders
+                                        </a>
+
+                                        <form asp-area="Admin" asp-controller="Users" asp-action="ToggleStatus" asp-route-id="@user.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")"
+                                                    onclick="return confirm('Are you sure you want to @(user.IsActive ? "deactivate" : "activate") account for @user.Email?');">
+                                                <i class="bi @(user.IsActive ? "bi-person-slash" : "bi-person-check")"></i>
+                                                @(user.IsActive ? "Suspend" : "Activate")
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

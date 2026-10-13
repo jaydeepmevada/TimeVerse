@@ -1,0 +1,255 @@
+@model TimeVerse.ViewModels.WatchListViewModel
+@{
+    ViewData["Title"] = "Shop Watches — TimeVerse";
+}
+
+<!-- Shop Header Banner -->
+<section class="tv-catalog-header">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="tv-section-tag" style="color: var(--tv-accent);">Curated Horology</span>
+                <h1 style="font-size: 2.5rem; color: #FFFFFF; font-weight: 700; margin-bottom: 0.25rem;">WATCH STORE</h1>
+                <p style="color: #94A3B8; margin-bottom: 0; font-size: 0.95rem;">
+                    Showing @Model.Watches.Count of @Model.TotalItems available watches
+                </p>
+            </div>
+            
+            <!-- Quick Search Bar (Phase 2.2: Name, Brand, Category) -->
+            <form method="get" asp-controller="Shop" asp-action="Index" class="d-flex gap-2" style="max-width: 420px; width: 100%;">
+                <input type="hidden" name="brand" value="@Model.Brand" />
+                <input type="hidden" name="category" value="@Model.Category" />
+                <input type="hidden" name="sort" value="@Model.Sort" />
+                <input type="text" name="search" value="@Model.Search" class="tv-input text-dark" placeholder="Search watch name, brand, category..." style="background: #FFFFFF;" />
+                <button type="submit" class="tv-btn-primary" style="padding: 0.65rem 1.3rem; white-space: nowrap;">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Shop Body: Sidebar Filters & Product Grid -->
+<section class="tv-section-light" style="padding: 2.5rem 0 4rem; background: var(--tv-bg);">
+    <div class="container-xl">
+        <div class="row g-4">
+            <!-- Left Sidebar Filter Form (Phase 2.3) -->
+            <div class="col-lg-3">
+                <div class="tv-filter-card" style="background: var(--tv-white); border: 1px solid var(--tv-border); border-radius: 8px; padding: 1.5rem; box-shadow: var(--tv-shadow-subtle);">
+                    <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                        <div class="tv-filter-title mb-0" style="font-weight: 700; font-size: 1rem; color: var(--tv-primary);">
+                            <i class="bi bi-funnel me-1" style="color: var(--tv-accent);"></i> Filters
+                        </div>
+                        <a asp-controller="Shop" asp-action="Index" class="text-muted small text-decoration-underline">Reset All</a>
+                    </div>
+
+                    <form method="get" asp-controller="Shop" asp-action="Index" id="tvFilterForm">
+                        <input type="hidden" name="search" value="@Model.Search" />
+                        <input type="hidden" name="sort" value="@Model.Sort" />
+
+                        <!-- Brand Filter -->
+                        <div class="tv-filter-group mb-3">
+                            <label class="tv-filter-group-title d-block mb-1">Brand</label>
+                            <select name="brand" class="tv-select w-100" onchange="this.form.submit()">
+                                <option value="">All Brands</option>
+                                @foreach (var b in Model.FilterOptions.Brands)
+                                {
+                                    <option value="@b" selected="@(Model.Brand == b)">@b</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="tv-filter-group mb-3">
+                            <label class="tv-filter-group-title d-block mb-1">Category</label>
+                            <select name="category" class="tv-select w-100" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                @foreach (var c in Model.FilterOptions.Categories)
+                                {
+                                    <option value="@c" selected="@(Model.Category == c)">@c</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Movement Filter -->
+                        <div class="tv-filter-group mb-3">
+                            <label class="tv-filter-group-title d-block mb-1">Movement Type</label>
+                            <select name="movement" class="tv-select w-100" onchange="this.form.submit()">
+                                <option value="">All Movements</option>
+                                @foreach (var m in Model.FilterOptions.Movements)
+                                {
+                                    <option value="@m" selected="@(Model.Movement == m)">@m</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Gender Filter -->
+                        <div class="tv-filter-group mb-3">
+                            <label class="tv-filter-group-title d-block mb-1">Gender</label>
+                            <select name="gender" class="tv-select w-100" onchange="this.form.submit()">
+                                <option value="">All Genders</option>
+                                @foreach (var g in Model.FilterOptions.Genders)
+                                {
+                                    <option value="@g" selected="@(Model.Gender == g)">@g</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Availability / Stock Status Filter -->
+                        <div class="tv-filter-group mb-3">
+                            <label class="tv-filter-group-title d-block mb-1">Availability</label>
+                            <select name="stockFilter" class="tv-select w-100" onchange="this.form.submit()">
+                                <option value="" selected="@(string.IsNullOrEmpty(Model.StockFilter))">All Watches</option>
+                                <option value="inStock" selected="@(Model.StockFilter == "inStock")">In Stock Only</option>
+                                <option value="outOfStock" selected="@(Model.StockFilter == "outOfStock")">Sold Out Only</option>
+                            </select>
+                        </div>
+
+                        <!-- Price Range Filter -->
+                        <div class="tv-filter-group mb-4">
+                            <label class="tv-filter-group-title d-block mb-1">Price Range (₹)</label>
+                            <div class="d-flex gap-2 align-items-center mb-2">
+                                <input type="number" name="minPrice" value="@Model.MinPrice" placeholder="Min ₹" class="tv-input" style="padding: 0.5rem;" />
+                                <span class="text-muted">–</span>
+                                <input type="number" name="maxPrice" value="@Model.MaxPrice" placeholder="Max ₹" class="tv-input" style="padding: 0.5rem;" />
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="tv-btn-dark w-100" style="padding: 0.65rem;">
+                                <i class="bi bi-check2"></i> Apply Filters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right Products Grid -->
+            <div class="col-lg-9">
+                <!-- Sorting & Top Summary Bar (Phase 2.4) -->
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 p-3 mb-4 rounded" 
+                     style="background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+                    <div style="font-size: 0.9rem; font-weight: 500;">
+                        @if (!string.IsNullOrWhiteSpace(Model.Search))
+                        {
+                            <span>Search results for &ldquo;<strong class="text-dark">@Model.Search</strong>&rdquo; (@Model.TotalItems found)</span>
+                        }
+                        else
+                        {
+                            <span>Page <strong>@Model.CurrentPage</strong> of <strong>@(Model.TotalPages > 0 ? Model.TotalPages : 1)</strong></span>
+                        }
+                    </div>
+
+                    <!-- Sort Dropdown (Phase 2.4) -->
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="tvSortSelect" style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--tv-muted); white-space: nowrap;">Sort By:</label>
+                        <select id="tvSortSelect" class="tv-select" style="padding: 0.45rem 0.9rem; font-size: 0.84rem;"
+                                onchange="location.href = updateQueryString('sort', this.value);">
+                            <option value="featured" selected="@(Model.Sort == "featured")">Featured Watches</option>
+                            <option value="priceAsc" selected="@(Model.Sort == "priceAsc" || Model.Sort == "priceasc")">Price: Low to High</option>
+                            <option value="priceDesc" selected="@(Model.Sort == "priceDesc" || Model.Sort == "pricedesc")">Price: High to Low</option>
+                            <option value="newest" selected="@(Model.Sort == "newest")">Newest Arrivals</option>
+                            <option value="rating" selected="@(Model.Sort == "rating")">Highest Rated</option>
+                            <option value="bestSeller" selected="@(Model.Sort == "bestSeller" || Model.Sort == "bestseller")">Best Sellers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Grid (Phase 2.1) -->
+                @if (Model.Watches.Any())
+                {
+                    <div class="row g-4">
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <div class="col-md-6 col-xl-4">
+                                <partial name="_WatchCard" model="watch" />
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Server-side Pagination -->
+                    @if (Model.TotalPages > 1)
+                    {
+                        <div class="tv-pagination">
+                            <a class="tv-page-btn @(!Model.HasPreviousPage ? "disabled" : "")"
+                               href="@Url.Action("Index", new {
+                                   page = Model.CurrentPage - 1,
+                                   search = Model.Search,
+                                   brand = Model.Brand,
+                                   category = Model.Category,
+                                   movement = Model.Movement,
+                                   gender = Model.Gender,
+                                   minPrice = Model.MinPrice,
+                                   maxPrice = Model.MaxPrice,
+                                   stockFilter = Model.StockFilter,
+                                   sort = Model.Sort
+                               })">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+
+                            @for (int p = 1; p <= Model.TotalPages; p++)
+                            {
+                                <a class="tv-page-btn @(p == Model.CurrentPage ? "active" : "")"
+                                   href="@Url.Action("Index", new {
+                                       page = p,
+                                       search = Model.Search,
+                                       brand = Model.Brand,
+                                       category = Model.Category,
+                                       movement = Model.Movement,
+                                       gender = Model.Gender,
+                                       minPrice = Model.MinPrice,
+                                       maxPrice = Model.MaxPrice,
+                                       stockFilter = Model.StockFilter,
+                                       sort = Model.Sort
+                                   })">
+                                    @p
+                                </a>
+                            }
+
+                            <a class="tv-page-btn @(!Model.HasNextPage ? "disabled" : "")"
+                               href="@Url.Action("Index", new {
+                                   page = Model.CurrentPage + 1,
+                                   search = Model.Search,
+                                   brand = Model.Brand,
+                                   category = Model.Category,
+                                   movement = Model.Movement,
+                                   gender = Model.Gender,
+                                   minPrice = Model.MinPrice,
+                                   maxPrice = Model.MaxPrice,
+                                   stockFilter = Model.StockFilter,
+                                   sort = Model.Sort
+                               })">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <!-- Friendly Empty State -->
+                    <div class="text-center p-5 rounded" style="background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+                        <div style="font-size: 3rem; margin-bottom: 0.5rem; color: var(--tv-muted);"><i class="bi bi-search"></i></div>
+                        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--tv-primary);">No Watches Found</h3>
+                        <p style="color: var(--tv-muted); max-width: 450px; margin: 0 auto 1.5rem;">
+                            We couldn't find any watches matching your search or filters. Try adjusting your search keywords or resetting filters.
+                        </p>
+                        <a asp-controller="Shop" asp-action="Index" class="tv-btn-primary" style="padding: 0.65rem 1.4rem;">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset Filters
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function updateQueryString(key, value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(key, value);
+            url.searchParams.set('page', '1');
+            return url.toString();
+        }
+    </script>
+}

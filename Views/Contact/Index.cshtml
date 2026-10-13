@@ -1,0 +1,145 @@
+@model TimeVerse.ViewModels.ContactViewModel
+@{
+    ViewData["Title"] = "Contact Horology Concierge — TIMEVERSE";
+}
+
+<!-- Contact Banner -->
+<section class="tv-catalog-header">
+    <div class="container-xl text-center">
+        <h1 style="font-size: 2.8rem; color: #FFFFFF; margin-bottom: 0;">CONNECT WITH TIMEVERSE</h1>
+    </div>
+</section>
+
+<!-- Contact Form & Salon Details -->
+<section class="tv-section-light" style="padding: 4rem 0 5rem;">
+    <div class="container-xl">
+        <div class="row g-5">
+            <!-- Left: Contact Form -->
+            <div class="col-lg-7">
+                <div class="p-4 p-md-5 rounded" style="background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Send an Inquiry</h2>
+                    <p style="color: var(--tv-muted); font-size: 0.9rem; margin-bottom: 2rem;">
+                        Please provide your details below. All inquiries are assigned to our dedicated sales concierge desk.
+                    </p>
+
+                    @if (Model.IsSubmittedSuccess)
+                    {
+                        <div class="alert p-4 rounded mb-4" style="background: rgba(139, 224, 0, 0.15); border: 1px solid var(--tv-accent-lime); color: var(--tv-primary-dark);">
+                            <div class="d-flex align-items-center gap-2 fw-bold mb-1" style="font-size: 1.1rem;">
+                                <i class="bi bi-check-circle-fill text-success" style="color: var(--tv-accent-lime-dark) !important;"></i>
+                                Inquiry Transmitted Successfully
+                            </div>
+                            <p class="mb-0" style="font-size: 0.92rem;">
+                                @Model.FeedbackMessage
+                            </p>
+                        </div>
+                    }
+
+                    <form method="post" asp-controller="Contact" asp-action="Index">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 mb-3" style="font-size: 0.85rem;"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold" style="font-size: 0.82rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <input asp-for="Name" class="tv-input" placeholder="e.g. Rahul Sharma" />
+                            <span asp-validation-for="Name" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold" style="font-size: 0.82rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <input asp-for="Email" class="tv-input" placeholder="e.g. rahul@example.com" />
+                            <span asp-validation-for="Email" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label fw-bold" style="font-size: 0.82rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <input asp-for="Phone" class="tv-input" placeholder="+91 98765 43210" />
+                            <span asp-validation-for="Phone" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Subject" class="form-label fw-bold" style="font-size: 0.82rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <input asp-for="Subject" class="tv-input" placeholder="e.g. Rolex Submariner Allocation" />
+                            <span asp-validation-for="Subject" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Message" class="form-label fw-bold" style="font-size: 0.82rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                            <textarea asp-for="Message" rows="5" class="tv-input" placeholder="Describe your timepiece preferences, wrist sizing questions, or order requirements..."></textarea>
+                            <span asp-validation-for="Message" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <button type="submit" class="tv-btn-primary w-100" style="padding: 0.9rem;">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right: Concierge Salon Details -->
+            <div class="col-lg-5">
+                <div class="p-4 p-md-5 rounded h-100" style="background: var(--tv-surface-dark); border: 1px solid var(--tv-border-dark); color: var(--tv-white);">
+                    <h3 style="color: var(--tv-white); font-size: 1.8rem; margin-bottom: 1.5rem;">TIMEVERSE</h3>
+
+                    <div class="d-flex flex-column gap-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="tv-feature-icon" style="width: 44px; height: 44px; font-size: 1.2rem; margin-bottom: 0;">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1" style="font-size: 0.95rem;">Flagship Showroom</h5>
+                                <p style="color: #A6A59E; font-size: 0.85rem; margin-bottom: 0;">
+                                    Pavilion 04, Horology Avenue, Bandra Kurla Complex (BKC), Mumbai, 400051
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="tv-feature-icon" style="width: 44px; height: 44px; font-size: 1.2rem; margin-bottom: 0;">
+                                <i class="bi bi-telephone-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1" style="font-size: 0.95rem;">Telephone Concierge</h5>
+                                <p style="color: #A6A59E; font-size: 0.85rem; margin-bottom: 0;">
+                                    Toll-Free: 1800-846-3837 (TIME-VERSE)<br />
+                                    Direct: +91 (0) 79 4800 2026
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="tv-feature-icon" style="width: 44px; height: 44px; font-size: 1.2rem; margin-bottom: 0;">
+                                <i class="bi bi-envelope-check-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1" style="font-size: 0.95rem;">Email Communication</h5>
+                                <p style="color: #A6A59E; font-size: 0.85rem; margin-bottom: 0;">
+                                    Concierge: concierge@timeverse.luxury<br />
+                                    Sales Portal: sales@timeverse.luxury
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="tv-feature-icon" style="width: 44px; height: 44px; font-size: 1.2rem; margin-bottom: 0;">
+                                <i class="bi bi-clock-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-white mb-1" style="font-size: 0.95rem;">Private Viewing Hours</h5>
+                                <p style="color: #A6A59E; font-size: 0.85rem; margin-bottom: 0;">
+                                    Monday &ndash; Saturday: 10:00 AM &ndash; 8:00 PM<br />
+                                    Sunday: By Prior Appointment Only
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

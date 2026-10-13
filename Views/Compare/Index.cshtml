@@ -1,0 +1,158 @@
+@model TimeVerse.ViewModels.Compare.CompareViewModel
+@{
+    ViewData["Title"] = "Compare Watches — TIMEVERSE";
+}
+
+<div class="luxury-container py-5">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
+        <a asp-controller="Home" asp-action="Index">Home</a>
+        <span class="separator">/</span>
+        <span class="current">Compare Watches</span>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3 flex-wrap gap-3">
+        <div>
+            <span class="tv-badge tv-badge-dark mb-2 d-inline-block">Compare Models</span>
+            <h1 class="display-6 fw-bold mb-0">Compare Watches</h1>
+        </div>
+        <a asp-controller="Watches" asp-action="Index" class="tv-btn-outline" style="padding: 0.5rem 1.2rem;">
+            <i class="bi bi-plus-lg me-1"></i> Add More Watches
+        </a>
+    </div>
+
+    @if (!Model.Watches.Any())
+    {
+        <div class="luxury-card text-center py-5" style="background: var(--tv-white);">
+            <div class="card-body">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem; color: var(--tv-muted);"><i class="bi bi-arrow-left-right"></i></div>
+                <h3 class="fw-bold">Select Watches to Compare</h3>
+                <p class="text-muted max-w-md mx-auto mb-4">
+                    Explore our watch collection and select watches to compare their specs and prices side-by-side.
+                </p>
+                <a asp-controller="Watches" asp-action="Index" class="tv-btn-primary">Browse Watches</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle luxury-comparison-table bg-white">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 220px;" class="fw-bold font-serif">Specification</th>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <th class="text-center p-3" style="min-width: 260px;">
+                                <div class="position-relative">
+                                    <img src="@watch.ImageUrl" alt="@watch.Name" class="img-fluid rounded mb-2 border p-2 bg-light" style="max-height: 180px; object-fit: contain;" />
+                                    <div class="badge bg-light text-muted border text-uppercase fs-xs mb-1">@watch.BrandName</div>
+                                    <h5 class="font-serif fw-bold mb-1">@watch.Name</h5>
+                                    <div class="fs-5 fw-bold text-dark mb-2">₹@watch.Price.ToString("N0")</div>
+
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-controller="Watches" asp-action="Details" asp-route-id="@watch.Id" class="btn btn-sm btn-outline-dark">
+                                            Details
+                                        </a>
+                                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="watchId" value="@watch.Id" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button type="submit" class="btn btn-sm btn-luxury-primary">
+                                                <i class="bi bi-bag-plus"></i> Add
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-gear-wide-connected me-2"></i> Movement</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center fw-semibold">@watch.MovementType</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-circle me-2"></i> Case Size</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.CaseSize</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-shield me-2"></i> Case Material</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.CaseMaterial</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-palette me-2"></i> Dial Color</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.DialColor</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-watch me-2"></i> Strap Material</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.StrapMaterial</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-droplet-half me-2"></i> Water Resistance</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.WaterResistance</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-patch-check me-2"></i> Warranty</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.Warranty</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-globe me-2"></i> Origin</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">@watch.CountryOfOrigin</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-star-fill text-warning me-2"></i> Rating</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">
+                                <span class="fw-bold text-dark">@watch.Rating.ToString("F1")</span>
+                                <span class="text-warning">★</span>
+                            </td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="fw-bold bg-cream-subtle"><i class="bi bi-box-seam me-2"></i> Vault Status</td>
+                        @foreach (var watch in Model.Watches)
+                        {
+                            <td class="text-center">
+                                @if (watch.InStock)
+                                {
+                                    <span class="badge bg-success-subtle text-success border">Available in Vault</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border">Reserved</span>
+                                }
+                            </td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

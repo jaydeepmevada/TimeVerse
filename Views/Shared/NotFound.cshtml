@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "404 — Timepiece Not Found | TIMEVERSE";
+}
+
+<section class="tv-section-light" style="padding: 6rem 0; min-height: 70vh; display: flex; align-items: center;">
+    <div class="container-xl text-center">
+        <div class="p-5 rounded mx-auto" style="max-width: 650px; background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+            <div style="font-size: 4rem; color: var(--tv-accent-lime); margin-bottom: 0.5rem; line-height: 1;">
+                <i class="bi bi-compass"></i>
+            </div>
+            <div class="badge px-3 py-2 rounded-pill mb-3" style="background: rgba(201, 162, 39, 0.15); color: var(--tv-accent-lime); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;">
+                404 Horological Horizon
+            </div>
+            <h1 style="font-size: 2.2rem; margin-bottom: 0.75rem; font-family: 'Cinzel', serif;">Time Stands Still</h1>
+            <p style="color: var(--tv-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem;">
+                The time coordinate or watch edition you are attempting to locate is not archived in the TimeVerse vault. It may have been relocated or archived.
+            </p>
+
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a asp-controller="Home" asp-action="Index" class="tv-btn-primary">
+                    <i class="bi bi-house-door me-2"></i>Return to Homepage
+                </a>
+                <a asp-controller="Shop" asp-action="Index" class="tv-btn-dark">
+                    <i class="bi bi-compass me-2"></i>Explore Timepieces
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,91 @@
+@model TimeVerse.ViewModels.Account.RegisterViewModel
+@{
+    ViewData["Title"] = "Create Patron Account — TIMEVERSE";
+}
+
+<section class="tv-section-dark" style="min-height: 85vh; padding: 4rem 0; background: radial-gradient(circle at center, var(--tv-secondary) 0%, var(--tv-primary) 100%);">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-9">
+                <div class="p-4 p-md-5 rounded-4" style="background: rgba(11, 25, 44, 0.94); backdrop-filter: blur(16px); border: 1px solid rgba(30, 62, 98, 0.45); box-shadow: 0 25px 50px rgba(0,0,0,0.5);">
+                    <!-- Brand Header -->
+                    <div class="text-center mb-4">
+                        <a asp-controller="Home" asp-action="Index" class="text-decoration-none d-inline-flex flex-column align-items-center">
+                            <img src="~/images/timeverse-emblem.svg" alt="TimeVerse" style="height: 68px; width: auto; filter: drop-shadow(0 4px 14px rgba(173, 198, 255, 0.45)); margin-bottom: 0.5rem;" />
+                            <div class="tv-brand-name" style="font-size: 1.85rem; letter-spacing: -0.01em;">
+                                Time<span class="verse-highlight">Verse</span>
+                            </div>
+                            <div class="tv-brand-tagline" style="color: #94A3B8; font-size: 0.65rem; letter-spacing: 0.25em; margin-top: 2px;">THE UNIVERSE OF TIME</div>
+                        </a>
+                        <h2 style="font-size: 1.6rem; color: #FFFFFF; margin-top: 1.5rem; margin-bottom: 0.5rem; font-weight: 700; letter-spacing: 0.05em;">SIGN UP</h2>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 mb-3" style="font-size: 0.85rem; background: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #ff8585;"></div>
+
+                    <form method="post" asp-controller="Account" asp-action="Register" autocomplete="off">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="AcceptTerms" value="true" />
+
+                        <!-- First Name -->
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="FirstName" class="tv-input" placeholder="e.g. Jimit" autocomplete="off" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="FirstName" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="LastName" class="tv-input" placeholder="e.g. Shah" autocomplete="off" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="LastName" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="Email" class="tv-input" placeholder="jimit@example.com" autocomplete="off" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="Email" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="Phone" class="tv-input" placeholder="+91 98765 43210" autocomplete="off" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="Phone" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="Password" class="tv-input" placeholder="••••••••" autocomplete="new-password" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="Password" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-4">
+                            <label asp-for="ConfirmPassword" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: #CBD5E1;"></label>
+                            <input asp-for="ConfirmPassword" class="tv-input" placeholder="••••••••" autocomplete="new-password" style="background: var(--tv-secondary); color: #FFF; border-color: var(--tv-border-dark);" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger" style="font-size: 0.8rem;"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="tv-btn-primary w-100 mb-3" style="padding: 0.85rem; background: #2563EB !important; border: 1px solid #3B82F6 !important; color: #FFFFFF !important; font-weight: 700; letter-spacing: 0.05em; font-size: 0.95rem;">
+                            SIGN UP
+                        </button>
+
+                        <div class="text-center" style="font-size: 0.85rem; color: #94A3B8;">
+                            Already have an account? 
+                            <a asp-controller="Account" asp-action="Login" style="color: #38BDF8; font-weight: 600;">
+                                Sign in
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

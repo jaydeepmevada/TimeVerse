@@ -1,0 +1,298 @@
+@model TimeVerse.ViewModels.Checkout.CheckoutViewModel
+@{
+    ViewData["Title"] = "Concierge Checkout";
+}
+
+<div class="luxury-container py-5">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
+        <a asp-controller="Home" asp-action="Index">TimeVerse</a>
+        <span class="separator">/</span>
+        <a asp-controller="Cart" asp-action="Index">Vault</a>
+        <span class="separator">/</span>
+        <span class="current">Secure Checkout</span>
+    </nav>
+
+    <div class="mb-4 border-bottom pb-3">
+        <span class="badge-accent mb-2">Vault Dispatch</span>
+        <h1 class="display-5 fw-bold font-serif mb-0">Secure Concierge Checkout</h1>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-controller="Checkout" asp-action="PlaceOrder" method="post" id="checkoutForm">
+        @Html.AntiForgeryToken()
+
+        <div class="row g-4">
+            <!-- Left Column: Shipping & Payment -->
+            <div class="col-lg-8">
+                <!-- 1. Saved Addresses Selection -->
+                @if (Model.SavedAddresses != null && Model.SavedAddresses.Any())
+                {
+                    <div class="card luxury-card p-4 mb-4">
+                        <h4 class="font-serif fw-bold mb-3 d-flex align-items-center gap-2">
+                            <span class="badge bg-dark rounded-pill">1</span>
+                            <span>Select Saved Destination</span>
+                        </h4>
+
+                        <div class="row g-3 mb-3">
+                            @foreach (var addr in Model.SavedAddresses)
+                            {
+                                <div class="col-md-6">
+                                    <div class="card p-3 h-100 border saved-address-card @(Model.SelectedAddressId == addr.Id ? "border-dark bg-cream-subtle shadow-sm" : "")" style="cursor: pointer;" onclick="selectAddress(@addr.Id, '@addr.FullName', '@addr.AddressLine1', '@addr.AddressLine2', '@addr.City', '@addr.State', '@addr.PostalCode', '@addr.Country', '@addr.Phone')">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" asp-for="SelectedAddressId" value="@addr.Id" id="addr_@addr.Id" />
+                                                <label class="form-check-label fw-bold" for="addr_@addr.Id">
+                                                    @addr.FullName
+                                                </label>
+                                            </div>
+                                            @if (addr.IsDefault)
+                                            {
+                                                <span class="badge bg-accent text-dark fs-xs">Default</span>
+                                            }
+                                        </div>
+                                        <div class="small text-muted mt-2">
+                                            <div>@addr.AddressLine1 @addr.AddressLine2</div>
+                                            <div>@addr.City, @addr.State @addr.PostalCode</div>
+                                            <div>@addr.Country</div>
+                                            <div class="mt-1"><i class="bi bi-telephone me-1"></i> @addr.Phone</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="col-md-6">
+                                <div class="card p-3 h-100 border border-dashed text-center d-flex flex-column justify-content-center align-items-center" style="cursor: pointer;" onclick="clearAddressSelection()">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" asp-for="SelectedAddressId" value="" id="addr_new" />
+                                        <label class="form-check-label fw-bold" for="addr_new">
+                                            <i class="bi bi-plus-circle me-1"></i> Enter New Address
+                                        </label>
+                                    </div>
+                                    <small class="text-muted mt-1">Specify custom destination for this delivery</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- 2. Address Details Form -->
+                <div class="card luxury-card p-4 mb-4">
+                    <h4 class="font-serif fw-bold mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-dark rounded-pill">2</span>
+                        <span>Shipping Address</span>
+                    </h4>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="ShippingFullName" class="form-label small fw-bold">Full Recipient Name <span class="text-danger">*</span></label>
+                            <input asp-for="ShippingFullName" class="form-control" placeholder="e.g. Alexander Vance" id="inputFullName" />
+                            <span asp-validation-for="ShippingFullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ShippingPhone" class="form-label small fw-bold">Mobile Phone <span class="text-danger">*</span></label>
+                            <input asp-for="ShippingPhone" class="form-control" placeholder="+91 98000 00000" id="inputPhone" />
+                            <span asp-validation-for="ShippingPhone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="ShippingAddressLine1" class="form-label small fw-bold">Street Address / Landmark <span class="text-danger">*</span></label>
+                            <input asp-for="ShippingAddressLine1" class="form-control" placeholder="House/Flat No., Building Name, Street" id="inputAddress1" />
+                            <span asp-validation-for="ShippingAddressLine1" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="ShippingAddressLine2" class="form-label small fw-bold">Suite / Landmark (Optional)</label>
+                            <input asp-for="ShippingAddressLine2" class="form-control" placeholder="e.g. Near Grand Hyatt, Suite 501" id="inputAddress2" />
+                            <span asp-validation-for="ShippingAddressLine2" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="ShippingCity" class="form-label small fw-bold">City <span class="text-danger">*</span></label>
+                            <input asp-for="ShippingCity" class="form-control" placeholder="e.g. Mumbai" id="inputCity" />
+                            <span asp-validation-for="ShippingCity" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="ShippingState" class="form-label small fw-bold">State <span class="text-danger">*</span></label>
+                            <input asp-for="ShippingState" class="form-control" placeholder="e.g. Maharashtra" id="inputState" />
+                            <span asp-validation-for="ShippingState" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label asp-for="ShippingPostalCode" class="form-label small fw-bold">PIN / Postal Code <span class="text-danger">*</span></label>
+                            <input asp-for="ShippingPostalCode" class="form-control" placeholder="e.g. 400051" id="inputPostalCode" />
+                            <span asp-validation-for="ShippingPostalCode" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check mt-2">
+                                <input asp-for="SaveToAddressBook" class="form-check-input" type="checkbox" id="checkSaveAddress" />
+                                <label asp-for="SaveToAddressBook" class="form-check-label small">
+                                    Save this destination to my address book for future curations
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Payment Method -->
+                <div class="card luxury-card p-4 mb-4">
+                    <h4 class="font-serif fw-bold mb-3 d-flex align-items-center gap-2">
+                        <span class="badge bg-dark rounded-pill">3</span>
+                        <span>Payment Gateway</span>
+                    </h4>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="card p-3 border h-100 cursor-pointer payment-option">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="@TimeVerse.Models.PaymentMethod.UPI" id="pay_upi" checked />
+                                    <label class="form-check-label fw-bold" for="pay_upi">
+                                        <i class="bi bi-qr-code me-2 text-success"></i> Instant UPI / QR
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-2">Google Pay, PhonePe, Paytm, or BHIM</small>
+                            </label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="card p-3 border h-100 cursor-pointer payment-option">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="@TimeVerse.Models.PaymentMethod.CreditCard" id="pay_card" />
+                                    <label class="form-check-label fw-bold" for="pay_card">
+                                        <i class="bi bi-credit-card me-2 text-primary"></i> Credit / Debit Card
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-2">Visa, MasterCard, Amex, RuPay (256-Bit SSL)</small>
+                            </label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="card p-3 border h-100 cursor-pointer payment-option">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="@TimeVerse.Models.PaymentMethod.NetBanking" id="pay_nb" />
+                                    <label class="form-check-label fw-bold" for="pay_nb">
+                                        <i class="bi bi-bank me-2 text-warning"></i> Net Banking
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-2">HDFC, ICICI, SBI, Axis, Kotak and 50+ Banks</small>
+                            </label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="card p-3 border h-100 cursor-pointer payment-option">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" asp-for="PaymentMethod" value="@TimeVerse.Models.PaymentMethod.CashOnDelivery" id="pay_cod" />
+                                    <label class="form-check-label fw-bold" for="pay_cod">
+                                        <i class="bi bi-cash-stack me-2 text-dark"></i> Cash / Card on Delivery
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-2">Pay upon armored courier inspection</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label asp-for="Notes" class="form-label small fw-bold">Special Delivery Instructions</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="e.g. Call before arrival, leave with concierge reception"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Order Summary & Place Order -->
+            <div class="col-lg-4">
+                <div class="card luxury-card p-4 sticky-top" style="top: 100px;">
+                    <h4 class="font-serif fw-bold mb-3 border-bottom pb-2">Order Items</h4>
+
+                    <div class="checkout-items-list mb-3" style="max-height: 240px; overflow-y: auto;">
+                        @foreach (var item in Model.Cart.Items)
+                        {
+                            <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+                                <img src="@item.ImageUrl" alt="@item.WatchName" class="rounded border" style="width: 50px; height: 50px; object-fit: cover;" />
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold font-serif small">@item.WatchName</div>
+                                    <div class="text-muted fs-xs">Qty: @item.Quantity × ₹@item.UnitPrice.ToString("N0")</div>
+                                </div>
+                                <div class="fw-bold small text-end">₹@item.TotalPrice.ToString("N0")</div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">₹@Model.Cart.Subtotal.ToString("N0")</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Armored Shipping</span>
+                        <span>
+                            @if (Model.Cart.QualifiesForFreeShipping)
+                            {
+                                <span class="text-accent fw-bold">FREE</span>
+                            }
+                            else
+                            {
+                                <span>₹@Model.Cart.ShippingFee.ToString("N0")</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">All Taxes Included</span>
+                        <span class="text-muted">18% GST Incl.</span>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fw-bold fs-5">Final Total</span>
+                        <span class="fw-bold font-serif fs-3 text-dark">₹@Model.Cart.GrandTotal.ToString("N0")</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-luxury-primary w-100 py-3 mb-3 fw-bold fs-5 shadow">
+                        <i class="bi bi-shield-lock-fill me-2"></i> Authorize & Place Order
+                    </button>
+
+                    <div class="text-center text-muted fs-xs">
+                        By placing this order, you authorize TimeVerse to reserve and dispatch the selected horological instruments according to our Terms of Sale.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function selectAddress(id, name, line1, line2, city, state, postal, country, phone) {
+            document.getElementById('addr_' + id).checked = true;
+            document.getElementById('inputFullName').value = name;
+            document.getElementById('inputAddress1').value = line1;
+            document.getElementById('inputAddress2').value = line2 || '';
+            document.getElementById('inputCity').value = city;
+            document.getElementById('inputState').value = state;
+            document.getElementById('inputPostalCode').value = postal;
+            document.getElementById('inputPhone').value = phone;
+        }
+
+        function clearAddressSelection() {
+            document.getElementById('addr_new').checked = true;
+            document.getElementById('inputFullName').value = '';
+            document.getElementById('inputAddress1').value = '';
+            document.getElementById('inputAddress2').value = '';
+            document.getElementById('inputCity').value = '';
+            document.getElementById('inputState').value = '';
+            document.getElementById('inputPostalCode').value = '';
+            document.getElementById('inputPhone').value = '';
+        }
+    </script>
+}

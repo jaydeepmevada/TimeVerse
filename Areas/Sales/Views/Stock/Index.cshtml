@@ -1,0 +1,163 @@
+@model TimeVerse.ViewModels.Sales.SalesStockListViewModel
+@{
+    ViewData["Title"] = "Inventory Stock Lookup — Sales Desk";
+}
+
+<!-- Sales Console Header -->
+<section class="tv-catalog-header" style="padding: 2rem 0 1.5rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="tv-badge tv-badge-lime mb-2">Inventory Audit</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">STOCK & AVAILABILITY</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Instant stock queries, SKU matching, and warehouse availability verification.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Sales" asp-controller="Dashboard" asp-action="Index" class="tv-btn-outline-light" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sales Quick Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="Sales" asp-controller="Dashboard" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-speedometer2"></i> Overview</a>
+            <a asp-area="Sales" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-truck"></i> Customer Orders</a>
+            <a asp-area="Sales" asp-controller="Stock" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-boxes"></i> Stock Lookup</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-box-arrow-up-right"></i> View Storefront</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4.5rem;">
+    <div class="container-xl">
+        <!-- Stock Status Pills -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+            <a asp-area="Sales" asp-controller="Stock" asp-action="Index" asp-route-search="@Model.Search"
+               class="btn btn-sm @(string.IsNullOrEmpty(Model.StockFilter) ? "btn-dark text-white" : "btn-outline-dark")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                All Inventory <span class="badge bg-secondary ms-1">@Model.TotalWatchesCount</span>
+            </a>
+            <a asp-area="Sales" asp-controller="Stock" asp-action="Index" asp-route-stockFilter="lowStock" asp-route-search="@Model.Search"
+               class="btn btn-sm @(Model.StockFilter == "lowStock" ? "btn-warning text-dark" : "btn-outline-warning text-dark")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Low Stock Alert <span class="badge bg-warning text-dark ms-1">@Model.LowStockCount</span>
+            </a>
+            <a asp-area="Sales" asp-controller="Stock" asp-action="Index" asp-route-stockFilter="outOfStock" asp-route-search="@Model.Search"
+               class="btn btn-sm @(Model.StockFilter == "outOfStock" ? "btn-danger text-white" : "btn-outline-danger")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                Out of Stock <span class="badge bg-danger text-white ms-1">@Model.OutOfStockCount</span>
+            </a>
+            <a asp-area="Sales" asp-controller="Stock" asp-action="Index" asp-route-stockFilter="inStock" asp-route-search="@Model.Search"
+               class="btn btn-sm @(Model.StockFilter == "inStock" ? "btn-success text-white" : "btn-outline-success")" style="border-radius: 20px; padding: 0.35rem 0.9rem;">
+                In Stock Units
+            </a>
+        </div>
+
+        <!-- Search Toolbar -->
+        <div class="luxury-card p-3 mb-4" style="background: var(--tv-white);">
+            <form method="get" asp-area="Sales" asp-controller="Stock" asp-action="Index" class="row g-2 align-items-center">
+                @if (!string.IsNullOrEmpty(Model.StockFilter))
+                {
+                    <input type="hidden" name="stockFilter" value="@Model.StockFilter" />
+                }
+                <div class="col-md-9 col-lg-10">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" value="@Model.Search" class="form-control border-start-0" placeholder="Search by SKU, Model Name, or Maison Brand..." />
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-2 d-flex gap-2">
+                    <button type="submit" class="tv-btn-primary w-100 py-2">Search</button>
+                    @if (!string.IsNullOrEmpty(Model.Search) || !string.IsNullOrEmpty(Model.StockFilter))
+                    {
+                        <a asp-area="Sales" asp-controller="Stock" asp-action="Index" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-x-lg"></i></a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <!-- Inventory List Table (Read-Only) -->
+        <div class="luxury-card p-0" style="background: var(--tv-white); overflow: hidden;">
+            <div class="p-3 border-bottom bg-light d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-0" style="font-size: 1.1rem;"><i class="bi bi-boxes me-2"></i>Timepiece Availability Table</h5>
+                </div>
+                <span class="badge bg-light text-dark border">Read-Only View</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="padding-left: 1.25rem;">Watch Model</th>
+                            <th>Maison / Category</th>
+                            <th>Movement</th>
+                            <th class="text-end">Retail Price</th>
+                            <th class="text-center">Units In Stock</th>
+                            <th class="text-center" style="padding-right: 1.25rem;">Inventory Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Watches.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inboxes display-4 d-block mb-2"></i>
+                                    No watches found matching your query.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var w in Model.Watches)
+                        {
+                            <tr>
+                                <td style="padding-left: 1.25rem;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="@w.ImageUrl" alt="@w.Name" class="rounded border bg-light" style="width: 50px; height: 50px; object-fit: contain; padding: 2px;" />
+                                        <div>
+                                            <div class="fw-bold">@w.Name</div>
+                                            <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem; padding: 2px 6px;">@w.SKU</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@w.BrandName</div>
+                                    <small class="text-muted">@w.CategoryName</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">@w.MovementType</span>
+                                </td>
+                                <td class="text-end fw-bold" style="color: var(--tv-primary);">
+                                    ₹@w.Price.ToString("N0")
+                                </td>
+                                <td class="text-center">
+                                    <span class="fs-6 fw-bold">@w.StockQuantity</span>
+                                    <small class="text-muted d-block" style="font-size: 0.72rem;">Threshold: @w.LowStockThreshold</small>
+                                </td>
+                                <td class="text-center" style="padding-right: 1.25rem;">
+                                    @if (w.StockQuantity == 0)
+                                    {
+                                        <span class="badge bg-danger px-2 py-1">Out of Stock</span>
+                                    }
+                                    else if (w.IsLowStock)
+                                    {
+                                        <span class="badge bg-warning text-dark px-2 py-1"><i class="bi bi-exclamation-circle me-1"></i>Low Stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success px-2 py-1"><i class="bi bi-check-circle me-1"></i>In Stock</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3 text-muted small text-end">
+            <i class="bi bi-shield-lock me-1"></i> Note: Pricing adjustments and timepiece catalog additions require Administrator permissions.
+        </div>
+    </div>
+</section>

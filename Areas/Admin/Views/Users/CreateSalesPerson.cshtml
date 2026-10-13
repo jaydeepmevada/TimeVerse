@@ -1,0 +1,100 @@
+@model TimeVerse.ViewModels.Admin.CreateSalesPersonViewModel
+@{
+    ViewData["Title"] = "Provision Sales Representative — Admin Console";
+}
+
+<section class="tv-catalog-header" style="padding: 2.5rem 0 2rem;">
+    <div class="container-xl">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <span class="tv-section-tag">Staff Governance</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">CREATE SALES REPRESENTATIVE</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Provision authorized sales staff with fulfillment management permissions.</p>
+            </div>
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="tv-btn-outline-light" style="padding: 0.5rem 1rem;">
+                <i class="bi bi-arrow-left"></i> Back to Console
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="tv-section-light" style="padding: 3rem 0 5rem;">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="p-4 p-md-5 rounded" style="background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+                    @if (Model.Succeeded)
+                    {
+                        <div class="alert p-3 rounded mb-4" style="background: rgba(139, 224, 0, 0.15); border: 1px solid var(--tv-accent-lime); color: var(--tv-primary-dark);">
+                            <div class="d-flex align-items-center gap-2 fw-bold mb-1">
+                                <i class="bi bi-check-circle-fill text-success" style="color: var(--tv-accent-lime-dark) !important;"></i>
+                                Account Created Successfully
+                            </div>
+                            <p class="mb-0" style="font-size: 0.9rem;">
+                                @Model.Message
+                            </p>
+                        </div>
+                    }
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger p-2 mb-3" style="font-size: 0.85rem;"></div>
+
+                    <form method="post" asp-area="Admin" asp-controller="Users" asp-action="CreateSalesPerson">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="FirstName" class="tv-input" placeholder="e.g. Elena" />
+                                <span asp-validation-for="FirstName" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="LastName" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="LastName" class="tv-input" placeholder="e.g. Rostova" />
+                                <span asp-validation-for="LastName" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="Email" class="tv-input" placeholder="elena@timeverse.com" />
+                                <span asp-validation-for="Email" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="Phone" class="tv-input" placeholder="+91 98000 22222" />
+                                <span asp-validation-for="Phone" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="TemporaryPassword" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="TemporaryPassword" class="tv-input" placeholder="••••••••" />
+                                <span asp-validation-for="TemporaryPassword" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ConfirmPassword" class="form-label fw-bold" style="font-size: 0.8rem; text-transform: uppercase; color: var(--tv-muted);"></label>
+                                <input asp-for="ConfirmPassword" class="tv-input" placeholder="••••••••" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger" style="font-size: 0.8rem;"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 mb-4 rounded" style="background: var(--tv-cream-soft); border: 1px dashed var(--tv-border); font-size: 0.82rem;">
+                            <i class="bi bi-shield-lock-fill text-success" style="color: var(--tv-accent-lime-dark) !important;"></i>
+                            <strong>Role Assignment:</strong> This account will be granted the <strong>SalesPerson</strong> role exclusively. It cannot modify administrative settings or assign roles.
+                        </div>
+
+                        <button type="submit" class="tv-btn-primary w-100" style="padding: 0.85rem;">
+                            <i class="bi bi-check2-circle"></i> Provision Sales Representative Account
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

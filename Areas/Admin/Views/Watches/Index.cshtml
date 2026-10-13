@@ -1,0 +1,191 @@
+@model TimeVerse.ViewModels.Admin.WatchListAdminViewModel
+@{
+    ViewData["Title"] = "All Watches — Admin";
+}
+
+<!-- Admin Console Header -->
+<section class="tv-catalog-header" style="padding: 2rem 0 1.5rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="tv-badge tv-badge-lime mb-2">Watch Catalog</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">ALL TIMEPIECES</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Maintain watch models, pricing, specifications, stock levels, and media.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Admin" asp-controller="Watches" asp-action="Create" class="tv-btn-primary" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-plus-lg me-1"></i> Add Watch
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="@(User.IsInRole(TimeVerse.Data.RoleConstants.Admin) ? "Admin" : "Sales")" asp-controller="Dashboard" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-speedometer2"></i> Overview</a>
+            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-watch"></i> Watches</a>
+            <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-building"></i> Brands</a>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-tags"></i> Categories</a>
+            <a asp-area="@(User.IsInRole(TimeVerse.Data.RoleConstants.Admin) ? "Admin" : "Sales")" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-box-seam"></i> Orders</a>
+            @if (User.IsInRole(TimeVerse.Data.RoleConstants.Admin))
+            {
+                <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-people"></i> Users</a>
+            }
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-box-arrow-up-right"></i> View Storefront</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4.5rem;">
+    <div class="container-xl">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show mb-4 border" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show mb-4 border" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- Search & Stock Filter Toolbar -->
+        <div class="luxury-card p-3 mb-4" style="background: var(--tv-white);">
+            <form method="get" asp-area="Admin" asp-controller="Watches" asp-action="Index" class="row g-3 align-items-center">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" value="@Model.Search" class="form-control border-start-0" placeholder="Search by watch name or SKU..." />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="stockFilter" class="form-select">
+                        <option value="">All Stock Levels</option>
+                        <option value="lowStock" selected="@(Model.StockFilter == "lowStock")">Low Stock (≤ threshold)</option>
+                        <option value="outOfStock" selected="@(Model.StockFilter == "outOfStock")">Out of Stock (0 units)</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="tv-btn-primary w-100 py-2">Filter</button>
+                    @if (!string.IsNullOrEmpty(Model.Search) || !string.IsNullOrEmpty(Model.StockFilter))
+                    {
+                        <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-x-lg"></i></a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <!-- Inventory Table -->
+        <div class="luxury-card p-0" style="background: var(--tv-white); overflow: hidden;">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="padding-left: 1.25rem;">Watch & SKU</th>
+                            <th>Brand / Category</th>
+                            <th class="text-end">Price</th>
+                            <th class="text-center">Stock Level</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-end" style="padding-right: 1.25rem;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Watches.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inboxes display-4 d-block mb-2"></i>
+                                    No watches matched your search or filter.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var w in Model.Watches)
+                        {
+                            <tr class="@(!w.IsActive ? "table-secondary text-muted" : "")">
+                                <td style="padding-left: 1.25rem;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <img src="@w.ImageUrl" alt="@w.Name" class="rounded border bg-light" style="width: 52px; height: 52px; object-fit: contain; padding: 2px;" />
+                                        <div>
+                                            <div class="fw-bold">@w.Name</div>
+                                            <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem; padding: 2px 6px;">@w.SKU</span>
+                                            @if (w.IsFeatured)
+                                            {
+                                                <span class="badge bg-warning text-dark" style="font-size: 0.65rem; padding: 2px 6px; margin-left: 4px;">Featured</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">@w.BrandName</div>
+                                    <small class="text-muted">@w.CategoryName</small>
+                                </td>
+                                <td class="text-end fw-bold" style="color: var(--tv-primary);">
+                                    ₹@w.Price.ToString("N0")
+                                </td>
+                                <td class="text-center">
+                                    @if (w.StockQuantity == 0)
+                                    {
+                                        <span class="badge bg-danger" style="font-size: 0.75rem; padding: 3px 8px;">Out of Stock</span>
+                                    }
+                                    else if (w.IsLowStock)
+                                    {
+                                        <span class="badge bg-warning text-dark" style="font-size: 0.75rem; padding: 3px 8px;">Low: @w.StockQuantity</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success" style="font-size: 0.75rem; padding: 3px 8px;">In Stock: @w.StockQuantity</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (w.IsActive)
+                                    {
+                                        <span class="badge bg-success text-white">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary text-white">Inactive</span>
+                                    }
+                                </td>
+                                <td class="text-end" style="padding-right: 1.25rem;">
+                                    <div class="d-inline-flex gap-2">
+                                        <a asp-area="Admin" asp-controller="Watches" asp-action="Edit" asp-route-id="@w.Id" class="btn btn-sm btn-outline-dark" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" title="Edit Watch Details">
+                                            <i class="bi bi-pencil"></i> Edit
+                                        </a>
+
+                                        <a asp-area="Admin" asp-controller="Watches" asp-action="Specifications" asp-route-id="@w.Id" class="btn btn-sm btn-outline-primary" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" title="Edit Technical Specifications">
+                                            <i class="bi bi-sliders"></i> Specs
+                                        </a>
+
+                                        <form asp-area="Admin" asp-controller="Watches" asp-action="ToggleStatus" asp-route-id="@w.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm @(w.IsActive ? "btn-outline-warning" : "btn-outline-success")" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" title="@(w.IsActive ? "Deactivate watch" : "Activate watch")">
+                                                <i class="bi @(w.IsActive ? "bi-eye-slash" : "bi-eye")"></i>
+                                                @(w.IsActive ? "Deactivate" : "Activate")
+                                            </button>
+                                        </form>
+
+                                        <form asp-area="Admin" asp-controller="Watches" asp-action="Delete" asp-route-id="@w.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" style="padding: 0.25rem 0.6rem; font-size: 0.8rem;" title="Delete Timepiece"
+                                                    onclick="return confirm('Permanently delete timepiece @w.Name from database? (Protected: cannot delete if referenced in orders)');">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

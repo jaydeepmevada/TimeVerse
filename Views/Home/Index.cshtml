@@ -1,0 +1,308 @@
+@model TimeVerse.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "The Universe of Time";
+}
+
+<!-- ==========================================================================
+     PHASE 1.2: HERO SECTION
+     ========================================================================== -->
+<section class="tv-hero-section">
+    <div class="container-xl">
+        <div class="row align-items-center g-4 g-lg-5">
+            <!-- Left Editorial Text -->
+            <div class="col-lg-6">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="tv-hero-tag">
+                        <i class="bi bi-patch-check-fill me-1" style="color: var(--tv-accent);"></i> Authentic Luxury Watches
+                    </span>
+                </div>
+
+                <h1 class="tv-hero-title">
+                    <span style="color: #1E40AF;">TIME,</span> <span style="color: #000000;">PERFECTLY YOURS.</span>
+                </h1>
+
+                <p class="tv-hero-description">
+                    Discover watches designed to match every moment.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 align-items-center mt-3">
+                    <a href="/shop" class="tv-btn-primary">
+                        <i class="bi bi-bag-check-fill me-1"></i> Shop Watches
+                    </a>
+                    <a href="#featured" class="tv-btn-outline">
+                        Explore Collection
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Hero: Real-Time Live Watch Showcase -->
+            <div class="col-lg-6 text-center">
+                <div class="tv-hero-clock-container mx-auto">
+                    <!-- Analog Clock Face -->
+                    <div class="tv-clock-wrapper mx-auto">
+                        <!-- Outer Bezel & Case -->
+                        <div class="tv-clock-case">
+                            <!-- Dial Face -->
+                            <div id="tvRealTimeDial" class="tv-clock-dial">
+                                <!-- 12 Hour Markers Container -->
+                                <div id="tvDialMarkers" class="tv-clock-markers"></div>
+
+                                <!-- Dial Branding -->
+                                <div class="tv-clock-brand">
+                                    <img src="~/images/timeverse-emblem-blue.svg" alt="TimeVerse Blue Emblem" class="tv-clock-dial-logo" />
+                                    <div class="brand-title">TIMEVERSE</div>
+                                    <div class="brand-sub">THE UNIVERSE OF TIME</div>
+                                </div>
+
+                                <!-- 3 Hands -->
+                                <div id="tvHourHand" class="tv-clock-hand tv-hand-hour"></div>
+                                <div id="tvMinuteHand" class="tv-clock-hand tv-hand-minute"></div>
+                                <div id="tvSecondHand" class="tv-clock-hand tv-hand-second"></div>
+
+                                <!-- Center Cap Pin -->
+                                <div class="tv-clock-pin"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Synchronized Digital Readout Pill -->
+                    <div class="tv-hero-clock-pill mt-3">
+                        <div class="d-flex align-items-center justify-content-center gap-3">
+                            <div id="tvDigitalTime" class="tv-hero-digital-time font-monospace fw-bold" style="font-size: 1.25rem; letter-spacing: 0.05em; color: var(--tv-accent);">--:--:-- --</div>
+                            <div class="small border-start ps-3" id="tvDigitalDate" style="font-size: 0.8rem; color: var(--tv-muted); border-color: var(--tv-border) !important;">-------</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     PHASE 1.4: FEATURED WATCHES (4–6 Watches)
+     ========================================================================== -->
+<section class="tv-section-light" id="featured">
+    <div class="container-xl">
+        <div class="tv-section-header text-center mb-5">
+            <span class="tv-section-tag">Curated Selection</span>
+            <h2 class="tv-section-title">FEATURED WATCHES</h2>
+            <p class="tv-section-subtitle">Discover our most admired luxury and classic timepieces.</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var watch in Model.FeaturedWatches.Take(6))
+            {
+                <div class="col-xl-4 col-md-6">
+                    <partial name="_WatchCard" model="watch" />
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="/shop" class="tv-btn-dark">
+                View All Watches <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     PHASE 1.5: SHOP BY CATEGORY (4–6 Categories)
+     ========================================================================== -->
+<section class="tv-section-muted" id="categories">
+    <div class="container-xl">
+        <div class="tv-section-header text-center mb-5">
+            <span class="tv-section-tag">Explore Styles</span>
+            <h2 class="tv-section-title">SHOP BY CATEGORY</h2>
+            <p class="tv-section-subtitle">Find the style designed to match your individual lifestyle.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            @foreach (var cat in Model.Categories.Take(5))
+            {
+                <div class="col-lg-4 col-md-6">
+                    <a href="/watches?category=@cat.Name" class="tv-category-card text-decoration-none">
+                        <div class="tv-category-img-wrap">
+                            <img src="@cat.ImageUrl" alt="@cat.Name" loading="lazy" />
+                        </div>
+                        <div class="tv-category-content">
+                            <h3 class="tv-category-name">@cat.Name</h3>
+                            <p class="tv-category-desc">@cat.Description</p>
+                            <span class="tv-category-link">
+                                View Collection <i class="bi bi-arrow-right ms-1"></i>
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     PHASE 1.6: WHY CHOOSE TIMEVERSE (4 Core Trust Benefits)
+     ========================================================================== -->
+<section class="tv-section-light">
+    <div class="container-xl">
+        <div class="tv-section-header text-center mb-5">
+            <span class="tv-section-tag">The TimeVerse Promise</span>
+            <h2 class="tv-section-title">WHY CHOOSE TIMEVERSE</h2>
+            <p class="tv-section-subtitle">A shopping experience built upon trust, authenticity, and peace of mind.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- 1. Authentic Watches -->
+            <div class="col-lg-3 col-md-6">
+                <div class="tv-benefit-card text-center p-4">
+                    <div class="tv-benefit-icon mb-3">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <h4 class="tv-benefit-title">Authentic Watches</h4>
+                    <p class="tv-benefit-desc">
+                        Quality products from trusted brands.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. Secure Shopping -->
+            <div class="col-lg-3 col-md-6">
+                <div class="tv-benefit-card text-center p-4">
+                    <div class="tv-benefit-icon mb-3">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <h4 class="tv-benefit-title">Secure Shopping</h4>
+                    <p class="tv-benefit-desc">
+                        Your shopping experience stays safe and secure.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. Fast Delivery -->
+            <div class="col-lg-3 col-md-6">
+                <div class="tv-benefit-card text-center p-4">
+                    <div class="tv-benefit-icon mb-3">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <h4 class="tv-benefit-title">Fast Delivery</h4>
+                    <p class="tv-benefit-desc">
+                        Reliable and convenient delivery.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4. Easy Returns -->
+            <div class="col-lg-3 col-md-6">
+                <div class="tv-benefit-card text-center p-4">
+                    <div class="tv-benefit-icon mb-3">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <h4 class="tv-benefit-title">Easy Returns</h4>
+                    <p class="tv-benefit-desc">
+                        Simple and customer-friendly return process.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================================================
+     PHASE 1.7: CUSTOMER FEEDBACK (WHAT WATCH LOVERS SAY — 3–4 Testimonials)
+     ========================================================================== -->
+<section class="tv-section-muted">
+    <div class="container-xl">
+        <div class="tv-section-header text-center mb-5">
+            <span class="tv-section-tag">Testimonials</span>
+            <h2 class="tv-section-title">WHAT WATCH LOVERS SAY</h2>
+            <p class="tv-section-subtitle">Real feedback from watch collectors and verified buyers.</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var review in Model.Reviews.Take(4))
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="tv-testimonial-card p-4 h-100 d-flex flex-column justify-content-between">
+                        <div>
+                            <!-- Star Rating -->
+                            <div class="tv-stars mb-3">
+                                @for (int i = 0; i < review.Rating; i++)
+                                {
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                }
+                            </div>
+                            <!-- Short Review -->
+                            <p class="tv-testimonial-quote mb-4">
+                                &ldquo;@review.Comment&rdquo;
+                            </p>
+                        </div>
+
+                        <!-- Customer Profile & Product Name -->
+                        <div class="tv-testimonial-author d-flex align-items-center gap-3 pt-3 border-top">
+                            <div class="tv-author-avatar">
+                                <img src="@(!string.IsNullOrEmpty(review.AvatarUrl) ? review.AvatarUrl : "/images/avatars/avatar-1.svg")" alt="@review.AuthorName" class="rounded-circle" width="44" height="44" />
+                            </div>
+                            <div>
+                                <div class="tv-author-name">@review.AuthorName</div>
+                                <div class="tv-author-product text-muted small">@review.WatchName</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@{
+    string GetBrandLogoUrl(string brand) => brand.ToLower() switch
+    {
+        "fossil" => "/images/brands/fossil.png",
+        "titan" => "/images/brands/titan.png",
+        "seiko" => "/images/brands/seiko.png",
+        "citizen" => "/images/brands/citizen.png",
+        "rolex" => "/images/brands/rolex.svg",
+        "omega" => "/images/brands/omega.svg",
+        "casio" => "/images/brands/casio.svg",
+        "tissot" => "/images/brands/tissot.svg",
+        "fastrack" => "/images/brands/fastrack.png",
+        _ => $"/images/brands/{brand.ToLower()}.svg"
+    };
+}
+
+<!-- ==========================================================================
+     PHASE 1.8: POPULAR BRANDS (Immediately Above Footer)
+     ========================================================================== -->
+<section class="tv-section-light py-5" style="background: #F8FAFC;">
+    <div class="container-xl">
+        <div class="tv-section-header text-center mb-4">
+            <span class="tv-section-tag">Curated Watchmakers</span>
+            <h2 class="tv-section-title h3" style="letter-spacing: -0.01em;">POPULAR WATCH BRANDS</h2>
+            <p class="tv-section-subtitle mb-0" style="color: #64748B;">Explore world-renowned watchmakers represented in our luxury catalog.</p>
+        </div>
+
+        <div class="row row-cols-2 row-cols-md-4 g-3 g-lg-4 mt-2">
+            @foreach (var brand in Model.PopularBrands)
+            {
+                var logoUrl = GetBrandLogoUrl(brand);
+                var isFossil = brand.Equals("Fossil", StringComparison.OrdinalIgnoreCase);
+
+                <div class="col">
+                    <a href="/shop?brand=@brand" class="tv-brand-card text-decoration-none" title="Browse @brand Collection">
+                        <div class="tv-brand-logo-frame">
+                            <img src="@logoUrl" alt="@brand Logo" class="tv-brand-logo-img @(isFossil ? "tv-brand-fossil" : "")" loading="lazy" />
+                        </div>
+                        <div class="tv-brand-card-info">
+                            <span class="tv-brand-card-name">@brand</span>
+                            <span class="tv-brand-card-sub">Explore <i class="bi bi-arrow-right"></i></span>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <!-- PHASE 1.3: REAL-TIME ANALOG CLOCK SCRIPT -->
+    <script src="~/js/realtime-clock.js" asp-append-version="true"></script>
+}

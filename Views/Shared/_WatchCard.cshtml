@@ -1,0 +1,100 @@
+@model TimeVerse.ViewModels.WatchCardViewModel
+
+<div class="tv-card-tilt-wrap h-100">
+    <div class="tv-product-card">
+        <!-- Top Badges -->
+        <div class="tv-card-badges">
+            @if (Model.IsLimitedEdition)
+            {
+                <span class="tv-badge tv-badge-dark"><i class="bi bi-gem"></i> Rare</span>
+            }
+            @if (Model.IsBestSeller)
+            {
+                <span class="tv-badge" style="background: var(--tv-accent); color: #FFFFFF;"><i class="bi bi-fire"></i> Best Seller</span>
+            }
+            @if (Model.IsNewArrival)
+            {
+                <span class="tv-badge" style="background: var(--tv-secondary); color:#FFFFFF;">New</span>
+            }
+            @if (!Model.InStock)
+            {
+                <span class="tv-badge bg-danger text-white">Sold Out</span>
+            }
+            else if (Model.IsLowStock)
+            {
+                <span class="tv-badge bg-warning text-dark">Only @Model.StockQuantity Left</span>
+            }
+        </div>
+
+        <!-- Quick Wishlist Action (Phase 2.7) -->
+        <div class="tv-card-actions-quick">
+            <button type="button" 
+                    class="tv-btn-icon-round" 
+                    title="Add to Wishlist" 
+                    aria-label="Add to Wishlist"
+                    data-watch-id="@Model.Id"
+                    onclick="TimeVerseState.toggleWishlist(@Model.Id, '@Model.Name', this)">
+                <i class="bi bi-heart"></i>
+            </button>
+        </div>
+
+        <!-- Image Link -->
+        <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.Id" class="tv-card-image-wrap">
+            <img src="@Model.ImageUrl" alt="@Model.Name" loading="lazy" />
+        </a>
+
+        <!-- Card Body -->
+        <div class="tv-card-body">
+            <div class="tv-card-brand">@Model.BrandName</div>
+            <h3 class="tv-card-title">
+                <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a>
+            </h3>
+
+            <!-- Rating & Movement -->
+            <div class="tv-card-meta">
+                <span class="tv-stars">
+                    <i class="bi bi-star-fill text-warning"></i> @Model.Rating.ToString("0.0")
+                </span>
+                <span>•</span>
+                <span>@Model.MovementType</span>
+                <span>•</span>
+                <span>@Model.Gender</span>
+            </div>
+
+            <!-- Pricing -->
+            <div class="tv-card-pricing">
+                <span class="tv-price-current">₹@Model.Price.ToString("N0")</span>
+                @if (Model.OriginalPrice.HasValue && Model.OriginalPrice.Value > Model.Price)
+                {
+                    <span class="tv-price-original">₹@Model.OriginalPrice.Value.ToString("N0")</span>
+                    @if (Model.DiscountPercentage > 0)
+                    {
+                        <span class="tv-discount-pill">-@Model.DiscountPercentage.ToString("0")%</span>
+                    }
+                }
+            </div>
+
+            <!-- Footer Action Buttons: View Details & Add to Cart (Phase 2.1 & 2.6) -->
+            <div class="tv-card-footer-actions">
+                @if (Model.InStock)
+                {
+                    <button type="button" 
+                            class="tv-btn-card-add" 
+                            onclick="TimeVerseState.addToCart(@Model.Id, '@Model.Name', this)">
+                        <i class="bi bi-bag-plus"></i> Add to Cart
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="tv-btn-card-add disabled" disabled>
+                        Out of Stock
+                    </button>
+                }
+
+                <a asp-controller="Shop" asp-action="Details" asp-route-id="@Model.Id" class="tv-btn-card-view" title="View Details">
+                    Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

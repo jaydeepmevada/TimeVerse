@@ -1,0 +1,228 @@
+@model TimeVerse.ViewModels.Admin.WatchSpecificationsViewModel
+@{
+    ViewData["Title"] = $"Specifications — {Model.WatchName}";
+}
+
+<section class="tv-catalog-header" style="background: linear-gradient(135deg, #070e1b 0%, #0c1a30 100%); padding: 2.5rem 0 2rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+    <div class="container-xl">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <span class="badge px-3 py-2 rounded-pill mb-2" style="background: rgba(30, 92, 179, 0.25); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                    <i class="bi bi-sliders me-1"></i> Technical Specifications
+                </span>
+                <h1 style="font-size: 2.2rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.35rem; letter-spacing: -0.02em;">
+                    @(Model.IsNew ? "Step 2: Watch Specifications" : "Edit Specifications")
+                </h1>
+                <p style="color: #94a3b8; margin-bottom: 0; font-size: 0.95rem;">
+                    Pre-filled with common industry defaults. Non-mandatory — modify only what you need.
+                </p>
+            </div>
+            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn" style="background: rgba(255,255,255,0.06); color: #f8fafc; border: 1px solid rgba(255,255,255,0.15); padding: 0.6rem 1.25rem; font-weight: 600; border-radius: 8px; transition: all 0.2s;">
+                <i class="bi bi-arrow-left me-1"></i> Back to Watches List
+            </a>
+        </div>
+    </div>
+</section>
+
+<section style="background: #0b1322; min-height: 80vh; padding: 3rem 0 5rem;">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+
+                @if (Model.IsNew)
+                {
+                    <div class="alert d-flex align-items-start gap-3 mb-4 shadow-sm" style="background: rgba(30, 92, 179, 0.2); border: 1px solid rgba(96, 165, 250, 0.4); color: #e2e8f0; border-radius: 12px; padding: 1.25rem 1.5rem;">
+                        <i class="bi bi-info-circle-fill fs-3 text-info mt-1"></i>
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold text-white mb-1">Timepiece Added Successfully!</h5>
+                            <p class="mb-2 text-light" style="font-size: 0.92rem;">
+                                The watch details have been saved. All common specifications below are already pre-filled with standard values.
+                                You can make any changes needed, or simply click <strong>"Keep Defaults & Finish"</strong> to proceed.
+                            </p>
+                            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn btn-sm btn-info text-dark fw-bold px-3 py-1">
+                                <i class="bi bi-check2-circle me-1"></i> Keep Defaults & Finish
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                <!-- Watch Quick Summary Card -->
+                <div class="card border-0 mb-4 shadow" style="background: #111e33; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="@Model.PrimaryImageUrl" alt="@Model.WatchName" class="rounded border bg-light" style="width: 64px; height: 64px; object-fit: contain; padding: 4px;" />
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                    <h4 class="fw-bold text-white mb-0" style="font-size: 1.3rem;">@Model.WatchName</h4>
+                                    <span class="badge bg-secondary font-monospace">@Model.SKU</span>
+                                </div>
+                                <div class="text-muted small">
+                                    <span class="text-info fw-semibold">Brand:</span> @Model.BrandName &nbsp;|&nbsp;
+                                    <span class="text-info fw-semibold">Category:</span> @Model.CategoryName
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specifications Form Card -->
+                <div class="card border-0 shadow-lg" style="background: #111e33; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 14px; overflow: hidden;">
+                    <div class="card-header border-0 py-3 px-4" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06) !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.08em; color: #60a5fa;">
+                                <i class="bi bi-gear-wide-connected me-1"></i> Technical Details & Badges
+                            </span>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 0.75rem;">
+                                Optional / Pre-Filled Defaults
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <form method="post" asp-area="Admin" asp-controller="Watches" asp-action="Specifications">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="WatchId" />
+                            <input type="hidden" asp-for="WatchName" />
+                            <input type="hidden" asp-for="SKU" />
+                            <input type="hidden" asp-for="BrandName" />
+                            <input type="hidden" asp-for="CategoryName" />
+                            <input type="hidden" asp-for="PrimaryImageUrl" />
+                            <input type="hidden" asp-for="IsNew" />
+
+                            <!-- Section 1: Movement & Fit -->
+                            <h6 class="text-uppercase fw-bold mb-3 pb-2" style="color: #93c5fd; font-size: 0.8rem; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-stopwatch me-1"></i> 1. Movement & Fit
+                            </h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label asp-for="MovementType" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <select asp-for="MovementType" asp-items="Html.GetEnumSelectList<TimeVerse.Models.MovementType>()" class="form-select" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;">
+                                    </select>
+                                    <span asp-validation-for="MovementType" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Gender" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <select asp-for="Gender" asp-items="Html.GetEnumSelectList<TimeVerse.Models.WatchGender>()" class="form-select" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;">
+                                    </select>
+                                    <span asp-validation-for="Gender" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Section 2: Case & Dial -->
+                            <h6 class="text-uppercase fw-bold mb-3 pb-2" style="color: #93c5fd; font-size: 0.8rem; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-circle me-1"></i> 2. Case, Dial & Strap
+                            </h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label asp-for="CaseSize" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="CaseSize" class="form-control" placeholder="e.g. 40mm, 42mm, 38mm" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="CaseSize" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="CaseMaterial" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="CaseMaterial" class="form-control" placeholder="e.g. Stainless Steel, Titanium, Ceramic" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="CaseMaterial" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="DialColor" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="DialColor" class="form-control" placeholder="e.g. Black, Sunray Blue, Silver, White" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="DialColor" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="StrapMaterial" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="StrapMaterial" class="form-control" placeholder="e.g. Stainless Steel, Genuine Leather, Silicone" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="StrapMaterial" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Section 3: Durability & Manufacturing -->
+                            <h6 class="text-uppercase fw-bold mb-3 pb-2" style="color: #93c5fd; font-size: 0.8rem; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-shield-check me-1"></i> 3. Durability & Guarantee
+                            </h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label asp-for="WaterResistance" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="WaterResistance" class="form-control" placeholder="e.g. 50m / 5 ATM, 100m / 10 ATM, 300m" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="WaterResistance" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Warranty" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="Warranty" class="form-control" placeholder="e.g. 2 Years International, 5 Years" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="Warranty" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="CountryOfOrigin" class="form-label fw-semibold" style="color: #f1f5f9; font-size: 0.88rem;"></label>
+                                    <input asp-for="CountryOfOrigin" class="form-control" placeholder="e.g. Switzerland, Japan, Germany, India" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.7rem 1rem; border-radius: 8px;" />
+                                    <span asp-validation-for="CountryOfOrigin" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <!-- Section 4: Display Badges -->
+                            <h6 class="text-uppercase fw-bold mb-3 pb-2" style="color: #93c5fd; font-size: 0.8rem; letter-spacing: 0.05em; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                                <i class="bi bi-tags me-1"></i> 4. Promotional Badges
+                            </h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="form-check form-switch p-3 rounded" style="background: #09101c; border: 1px solid rgba(255,255,255,0.08);">
+                                        <input asp-for="IsFeatured" class="form-check-input ms-0 me-2" type="checkbox" id="specFeatured" style="cursor: pointer;">
+                                        <label class="form-check-label fw-semibold text-light" for="specFeatured" style="cursor: pointer; font-size: 0.85rem;">
+                                            Featured
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="form-check form-switch p-3 rounded" style="background: #09101c; border: 1px solid rgba(255,255,255,0.08);">
+                                        <input asp-for="IsBestSeller" class="form-check-input ms-0 me-2" type="checkbox" id="specBestSeller" style="cursor: pointer;">
+                                        <label class="form-check-label fw-semibold text-light" for="specBestSeller" style="cursor: pointer; font-size: 0.85rem;">
+                                            Best Seller
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="form-check form-switch p-3 rounded" style="background: #09101c; border: 1px solid rgba(255,255,255,0.08);">
+                                        <input asp-for="IsNewArrival" class="form-check-input ms-0 me-2" type="checkbox" id="specNewArrival" style="cursor: pointer;">
+                                        <label class="form-check-label fw-semibold text-light" for="specNewArrival" style="cursor: pointer; font-size: 0.85rem;">
+                                            New Arrival
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="form-check form-switch p-3 rounded" style="background: #09101c; border: 1px solid rgba(255,255,255,0.08);">
+                                        <input asp-for="IsLimitedEdition" class="form-check-input ms-0 me-2" type="checkbox" id="specLimited" style="cursor: pointer;">
+                                        <label class="form-check-label fw-semibold text-light" for="specLimited" style="cursor: pointer; font-size: 0.85rem;">
+                                            Limited Edition
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-3 border-top" style="border-color: rgba(255,255,255,0.08) !important;">
+                                <div>
+                                    @if (Model.IsNew)
+                                    {
+                                        <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn btn-outline-secondary px-3 py-2" style="border-color: rgba(255,255,255,0.2); color: #cbd5e1;">
+                                            <i class="bi bi-skip-forward me-1"></i> Skip (Keep Defaults)
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="btn btn-outline-secondary px-3 py-2" style="border-color: rgba(255,255,255,0.2); color: #cbd5e1;">
+                                            <i class="bi bi-x me-1"></i> Cancel
+                                        </a>
+                                    }
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border: none; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+                                        <i class="bi bi-check2-circle me-1"></i> Save Specifications
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

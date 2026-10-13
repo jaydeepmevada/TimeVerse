@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Luminous Blue & Ice Shimmer Gradient for Dark Backgrounds -->
+    <linearGradient id="tvEmblemGrad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#93C5FD" />
+      <stop offset="70%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#60A5FA" />
+    </linearGradient>
+
+    <linearGradient id="tvStarGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(0, 10)">
+    <!-- 4-Point Sparkle Stars -->
+    <!-- Top-Right Main Star -->
+    <path d="M 175 16 Q 175 24 183 24 Q 175 24 175 32 Q 175 24 167 24 Q 175 24 175 16 Z" fill="url(#tvStarGlow)" />
+    <!-- Far Right Small Star -->
+    <path d="M 205 78 Q 205 82 209 82 Q 205 82 205 86 Q 205 82 201 82 Q 205 82 205 78 Z" fill="url(#tvStarGlow)" />
+    <!-- Bottom Left Star -->
+    <path d="M 68 138 Q 68 143 73 143 Q 68 143 68 148 Q 68 143 63 143 Q 68 143 68 138 Z" fill="url(#tvStarGlow)" />
+    <!-- Small star dust dots -->
+    <circle cx="50" cy="94" r="2.5" fill="#38BDF8" />
+    <circle cx="196" cy="38" r="2.3" fill="#60A5FA" />
+
+    <!-- Clock Outer Dial (Planet Body) -->
+    <circle cx="120" cy="85" r="54" stroke="url(#tvEmblemGrad)" stroke-width="5" fill="none" stroke-linecap="round" />
+
+    <!-- Cardinal Hour Dots -->
+    <circle cx="120" cy="42" r="3" fill="#FFFFFF" />
+    <circle cx="163" cy="85" r="3" fill="#FFFFFF" />
+    <circle cx="120" cy="128" r="3" fill="#FFFFFF" />
+    <circle cx="77" cy="85" r="3" fill="#FFFFFF" />
+
+    <!-- Clock Hands (10:10 Position) -->
+    <line x1="120" y1="85" x2="98" y2="72" stroke="url(#tvEmblemGrad)" stroke-width="5.2" stroke-linecap="round" />
+    <line x1="120" y1="85" x2="148" y2="61" stroke="url(#tvEmblemGrad)" stroke-width="5.2" stroke-linecap="round" />
+    <circle cx="120" cy="85" r="5.2" fill="#FFFFFF" />
+
+    <!-- Saturn Celestial Orbit Ring (Tilted -26deg) -->
+    <ellipse cx="120" cy="85" rx="84" ry="24" transform="rotate(-26 120 85)" 
+             stroke="url(#tvEmblemGrad)" stroke-width="5" fill="none" stroke-linecap="round" />
+  </g>
+</svg>

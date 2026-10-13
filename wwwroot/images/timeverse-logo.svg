@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Soft Celestial Gradient (Ice Blue to Lavender Periwinkle) -->
+    <linearGradient id="tvCelestialGrad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#D6E4FF" />
+      <stop offset="45%" stop-color="#ADC6FF" />
+      <stop offset="100%" stop-color="#B39DDB" />
+    </linearGradient>
+
+    <!-- Verse Text Gradient -->
+    <linearGradient id="tvVerseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8DA4FF" />
+      <stop offset="100%" stop-color="#B8A5FE" />
+    </linearGradient>
+
+    <!-- Subtle Glow Filter -->
+    <filter id="tvSoftGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- ================= EMBLEM ================= -->
+  <g transform="translate(80, 16)">
+    <!-- 4-Point Sparkle Stars -->
+    <!-- Top-Right Main Star -->
+    <path d="M 175 16 Q 175 24 183 24 Q 175 24 175 32 Q 175 24 167 24 Q 175 24 175 16 Z" fill="#ADC6FF" />
+    <!-- Far Right Small Star -->
+    <path d="M 205 78 Q 205 82 209 82 Q 205 82 205 86 Q 205 82 201 82 Q 205 82 205 78 Z" fill="#ADC6FF" />
+    <!-- Bottom Left Star -->
+    <path d="M 68 138 Q 68 143 73 143 Q 68 143 68 148 Q 68 143 63 143 Q 68 143 68 138 Z" fill="#ADC6FF" />
+    <!-- Small star dust dots -->
+    <circle cx="50" cy="94" r="2.2" fill="#ADC6FF" />
+    <circle cx="196" cy="38" r="2" fill="#ADC6FF" />
+
+    <!-- Clock Outer Dial (Planet Body) -->
+    <circle cx="120" cy="85" r="54" stroke="url(#tvCelestialGrad)" stroke-width="4.8" fill="none" stroke-linecap="round" />
+
+    <!-- Cardinal Hour Dots -->
+    <circle cx="120" cy="42" r="2.8" fill="#D6E4FF" />
+    <circle cx="163" cy="85" r="2.8" fill="#D6E4FF" />
+    <circle cx="120" cy="128" r="2.8" fill="#D6E4FF" />
+    <circle cx="77" cy="85" r="2.8" fill="#D6E4FF" />
+
+    <!-- Clock Hands (10:10 Position) -->
+    <!-- Hour Hand -->
+    <line x1="120" y1="85" x2="98" y2="72" stroke="url(#tvCelestialGrad)" stroke-width="5" stroke-linecap="round" />
+    <!-- Minute Hand -->
+    <line x1="120" y1="85" x2="148" y2="61" stroke="url(#tvCelestialGrad)" stroke-width="5" stroke-linecap="round" />
+    <!-- Center Pivot Pin -->
+    <circle cx="120" cy="85" r="5" fill="url(#tvCelestialGrad)" />
+
+    <!-- Saturn Celestial Orbit Ring (Tilted -25deg, 3D wrap) -->
+    <!-- Back Arc of Ring (hidden/underneath dial or continuous) -->
+    <ellipse cx="120" cy="85" rx="84" ry="24" transform="rotate(-26 120 85)" 
+             stroke="url(#tvCelestialGrad)" stroke-width="4.8" fill="none" stroke-linecap="round" />
+  </g>
+
+  <!-- ================= TYPOGRAPHY ================= -->
+  <!-- "TimeVerse" Wordmark -->
+  <g id="tvBrandText">
+    <text x="200" y="235" text-anchor="middle" font-family="'Poppins', sans-serif" font-weight="700" font-size="44" letter-spacing="-0.5">
+      <tspan fill="#FFFFFF">Time</tspan>
+      <tspan fill="url(#tvVerseGrad)">Verse</tspan>
+    </text>
+
+    <!-- Sub-Tagline "THE UNIVERSE OF TIME" -->
+    <text x="200" y="268" text-anchor="middle" font-family="'Poppins', sans-serif" font-weight="600" font-size="11.5" letter-spacing="4.5" fill="#E2E8F0">
+      THE UNIVERSE OF TIME
+    </text>
+  </g>
+</svg>

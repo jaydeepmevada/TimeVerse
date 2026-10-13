@@ -1,0 +1,251 @@
+@model TimeVerse.ViewModels.Admin.CreateWatchViewModel
+@{
+    ViewData["Title"] = "Add New Watch — TimeVerse Admin";
+}
+
+<section class="tv-catalog-header" style="background: linear-gradient(135deg, #070e1b 0%, #0c1a30 100%); padding: 2.5rem 0 2rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+    <div class="container-xl">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <span class="badge px-3 py-2 rounded-pill mb-2" style="background: rgba(30, 92, 179, 0.25); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                    <i class="bi bi-plus-circle me-1"></i> Inventory Management
+                </span>
+                <h1 style="font-size: 2.2rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.35rem; letter-spacing: -0.02em;">Add New Watch</h1>
+                <p style="color: #94a3b8; margin-bottom: 0; font-size: 0.95rem;">Fill in the 9 essential fields below to list a new timepiece in the store.</p>
+            </div>
+            <a asp-area="@(User.IsInRole(TimeVerse.Data.RoleConstants.Admin) ? "Admin" : "Sales")" asp-controller="Dashboard" asp-action="Index" class="btn" style="background: rgba(255,255,255,0.06); color: #f8fafc; border: 1px solid rgba(255,255,255,0.15); padding: 0.6rem 1.25rem; font-weight: 600; border-radius: 8px; transition: all 0.2s;">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</section>
+
+<section style="background: #0b1322; min-height: 80vh; padding: 3rem 0 5rem;">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="card border-0 shadow-lg" style="background: #111e33; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 14px; overflow: hidden;">
+                    <div class="card-header border-0 py-3 px-4" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06) !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.08em; color: #60a5fa;">
+                                <i class="bi bi-card-checklist me-1"></i> Watch Information Form
+                            </span>
+                            <span class="text-muted" style="font-size: 0.8rem;">9 Final Fields</span>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success d-flex align-items-center gap-2 mb-4" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; border-radius: 10px;">
+                                <i class="bi bi-check-circle-fill fs-5"></i>
+                                <div><strong>@TempData["SuccessMessage"]</strong></div>
+                            </div>
+                        }
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; border-radius: 10px; font-size: 0.9rem;"></div>
+
+                        <form method="post" asp-area="Admin" asp-controller="Watches" asp-action="Create" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+
+                            <div class="row g-4">
+                                <!-- 1. Watch Name -->
+                                <div class="col-12">
+                                    <label asp-for="Name" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        1. Watch Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control" placeholder="e.g. Titan Edge Ceramic, Fossil Neutra Chronograph, Casio Edifice" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;" />
+                                    <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 2. Brand -->
+                                <div class="col-md-6">
+                                    <label asp-for="BrandId" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        2. Brand <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="BrandId" asp-items="Model.BrandList" class="form-select" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;">
+                                        <option value="">-- Select Brand --</option>
+                                    </select>
+                                    <span asp-validation-for="BrandId" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 3. Category -->
+                                <div class="col-md-6">
+                                    <label asp-for="CategoryId" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        3. Category <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="CategoryId" asp-items="Model.CategoryList" class="form-select" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 4. Price (MRP) -->
+                                <div class="col-md-6">
+                                    <label asp-for="OriginalPrice" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        4. Price (MRP) <span class="text-danger">*</span>
+                                        <small class="text-muted fw-normal ms-1">(Original List Price in ₹)</small>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.12); color: #94a3b8; font-weight: 600;">₹</span>
+                                        <input asp-for="OriginalPrice" id="tvOriginalPrice" type="number" step="1" min="1" class="form-control" placeholder="e.g. 15995" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; font-size: 0.95rem;" />
+                                    </div>
+                                    <span asp-validation-for="OriginalPrice" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 5. Selling Price -->
+                                <div class="col-md-6">
+                                    <label asp-for="Price" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        5. Selling Price <span class="text-danger">*</span>
+                                        <small class="text-muted fw-normal ms-1">(Discounted Price in ₹)</small>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" style="background: #1e293b; border: 1px solid rgba(255,255,255,0.12); color: #38bdf8; font-weight: 600;">₹</span>
+                                        <input asp-for="Price" id="tvSellingPrice" type="number" step="1" min="1" class="form-control" placeholder="e.g. 12495" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; font-size: 0.95rem;" />
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger small mt-1 d-block"></span>
+                                    <div id="tvDiscountPreview" class="small mt-1" style="color: #38bdf8; display: none;"></div>
+                                </div>
+
+                                <!-- 6. Description -->
+                                <div class="col-12">
+                                    <label asp-for="Description" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        6. Description <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea asp-for="Description" rows="4" class="form-control" placeholder="Enter details about the watch style, material, craftsmanship, features, and design..." style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 7. Watch Image -->
+                                <div class="col-12">
+                                    <label asp-for="Images" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        7. Watch Image
+                                    </label>
+                                    <div class="p-4 rounded-3 text-center" style="background: #09101c; border: 2px dashed rgba(255,255,255,0.15); border-radius: 10px;">
+                                        <i class="bi bi-cloud-arrow-up text-primary" style="font-size: 2.2rem; color: #38bdf8 !important;"></i>
+                                        <p class="mb-2 mt-1 fw-semibold" style="color: #f1f5f9; font-size: 0.95rem;">Upload Watch Image(s)</p>
+                                        <p class="text-muted small mb-3">JPG, JPEG, PNG, WEBP (Max 8 photos, up to 5MB each)</p>
+                                        <input asp-for="Images" type="file" multiple accept=".jpg,.jpeg,.png,.webp" class="form-control d-inline-block" id="tvWatchImagesInput" style="max-width: 380px; background: #132238; border: 1px solid rgba(255,255,255,0.2); color: #ffffff;" />
+                                        <div id="tvImagePreviewContainer" class="d-flex justify-content-center flex-wrap gap-3 mt-3"></div>
+                                    </div>
+                                    <span asp-validation-for="Images" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 8. Stock Quantity -->
+                                <div class="col-md-6">
+                                    <label asp-for="StockQuantity" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        8. Stock Quantity <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="StockQuantity" type="number" min="0" class="form-control" placeholder="e.g. 10" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;" />
+                                    <span asp-validation-for="StockQuantity" class="text-danger small mt-1 d-block"></span>
+                                </div>
+
+                                <!-- 9. Status -->
+                                <div class="col-md-6">
+                                    <label asp-for="IsActive" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                        9. Status <span class="text-danger">*</span>
+                                    </label>
+                                    <select asp-for="IsActive" class="form-select" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;">
+                                        <option value="true">Active (Visible to Customers)</option>
+                                        <option value="false">Inactive (Hidden from Store)</option>
+                                    </select>
+                                    <span asp-validation-for="IsActive" class="text-danger small mt-1 d-block"></span>
+                                </div>
+                            </div>
+
+                            <hr style="border-color: rgba(255,255,255,0.08); margin: 2rem 0;" />
+
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; padding: 0.75rem 1.5rem; font-weight: 600; border-radius: 8px;">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn px-4 py-2" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); color: #ffffff; font-weight: 700; border-radius: 8px; border: none; font-size: 1rem; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35); padding: 0.75rem 2rem !important;">
+                                    <i class="bi bi-check2-circle me-1"></i> Add Watch
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Disallow decimal point, comma, exponent in price inputs
+        const integerPriceInputs = [document.getElementById('tvSellingPrice'), document.getElementById('tvOriginalPrice')];
+        integerPriceInputs.forEach(input => {
+            if (input) {
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === 'E') {
+                        e.preventDefault();
+                    }
+                });
+                input.addEventListener('input', function () {
+                    if (this.value.includes('.')) {
+                        this.value = this.value.split('.')[0];
+                    }
+                });
+            }
+        });
+
+        // Real-time discount calculation feedback
+        const mrpInput = document.getElementById('tvOriginalPrice');
+        const sellingPriceInput = document.getElementById('tvSellingPrice');
+        const discountPreview = document.getElementById('tvDiscountPreview');
+
+        function updateDiscount() {
+            const mrp = parseInt(mrpInput.value, 10) || 0;
+            const selling = parseInt(sellingPriceInput.value, 10) || 0;
+            if (mrp > 0 && selling > 0 && mrp > selling) {
+                const discount = (((mrp - selling) / mrp) * 100).toFixed(1);
+                discountPreview.style.display = 'block';
+                discountPreview.innerHTML = `<i class="bi bi-tag-fill me-1"></i> Calculated Discount: <strong>${discount}% OFF</strong> (Save ₹${(mrp - selling).toLocaleString('en-IN')})`;
+            } else {
+                discountPreview.style.display = 'none';
+            }
+        }
+
+        if (mrpInput && sellingPriceInput) {
+            mrpInput.addEventListener('input', updateDiscount);
+            sellingPriceInput.addEventListener('input', updateDiscount);
+        }
+
+        // Image client-side preview
+        const imgInput = document.getElementById('tvWatchImagesInput');
+        if (imgInput) {
+            imgInput.addEventListener('change', function (e) {
+                const container = document.getElementById('tvImagePreviewContainer');
+                container.innerHTML = '';
+                const files = Array.from(e.target.files);
+
+                if (files.length > 8) {
+                    alert('Maximum 8 images allowed.');
+                    this.value = '';
+                    return;
+                }
+
+                files.forEach((file, index) => {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`File ${file.name} exceeds 5MB limit.`);
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const card = document.createElement('div');
+                        card.style.cssText = 'width: 90px; height: 90px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); overflow: hidden; position: relative; background: #0c1a30; box-shadow: 0 4px 10px rgba(0,0,0,0.3);';
+                        card.innerHTML = `
+                            <img src="${event.target.result}" style="width:100%; height:100%; object-fit:cover;" />
+                            <span style="position: absolute; bottom: 3px; right: 3px; background: rgba(0,0,0,0.8); color: #60a5fa; font-size: 10px; font-weight: bold; padding: 1px 5px; border-radius: 4px;">#${index+1}</span>
+                        `;
+                        container.appendChild(card);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
+        }
+    </script>
+}

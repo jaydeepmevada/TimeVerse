@@ -1,0 +1,225 @@
+@model TimeVerse.ViewModels.Sales.SalesDashboardViewModel
+@{
+    ViewData["Title"] = "Sales & Fulfillment Desk — TIMEVERSE";
+}
+
+<!-- Sales Console Header -->
+<section class="tv-catalog-header" style="padding: 2rem 0 1.5rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <span class="tv-badge tv-badge-lime mb-2">Fulfillment Operations</span>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">SALES & DISPATCH DESK</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Process client orders, assign tracking numbers, and verify stock availability.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Admin" asp-controller="Watches" asp-action="Create" class="tv-btn-primary" style="padding: 0.55rem 1.1rem; background: #2563eb; border-color: #2563eb;">
+                    <i class="bi bi-plus-circle me-1"></i> Add Watch
+                </a>
+                <a asp-area="Sales" asp-controller="Orders" asp-action="Index" class="tv-btn-primary" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-box-seam"></i> All Orders
+                </a>
+                <a asp-area="Sales" asp-controller="Stock" asp-action="Index" class="tv-btn-outline-light" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-search"></i> Stock Lookup
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sales Quick Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="Sales" asp-controller="Dashboard" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-speedometer2"></i> Overview</a>
+            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-watch"></i> Watches</a>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-tags"></i> Categories</a>
+            <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-building"></i> Brands</a>
+            <a asp-area="Sales" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-truck"></i> Customer Orders</a>
+            <a asp-area="Sales" asp-controller="Stock" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-boxes"></i> Stock Lookup</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-box-arrow-up-right"></i> View Storefront</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4.5rem;">
+    <div class="container-xl">
+        <!-- Fulfillment Pipeline Metric Stages -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 style="font-size: 1.1rem; text-transform: uppercase; font-weight: 700; color: var(--tv-primary-dark); margin-bottom: 0;">
+                Order Fulfillment Pipeline
+            </h4>
+            <span class="tv-badge tv-badge-lime">Live Tracking</span>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="p-3 luxury-card h-100" style="border-top: 4px solid #F5A623 !important; background: var(--tv-white);">
+                    <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Pending</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--tv-primary-dark);">@Model.PendingOrdersCount</div>
+                    <div style="font-size: 0.72rem; color: #F5A623;">Awaiting Verification</div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="p-3 luxury-card h-100" style="border-top: 4px solid #4A90E2 !important; background: var(--tv-white);">
+                    <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Confirmed</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--tv-primary-dark);">@Model.ConfirmedOrdersCount</div>
+                    <div style="font-size: 0.72rem; color: #4A90E2;">Ready to Pack</div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="p-3 luxury-card h-100" style="border-top: 4px solid #9013FE !important; background: var(--tv-white);">
+                    <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Processing</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--tv-primary-dark);">@Model.ProcessingOrdersCount</div>
+                    <div style="font-size: 0.72rem; color: #9013FE;">Packing in Vault</div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="p-3 luxury-card h-100" style="border-top: 4px solid #7ED321 !important; background: var(--tv-white);">
+                    <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Shipped</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--tv-primary-dark);">@Model.ShippedOrdersCount</div>
+                    <div style="font-size: 0.72rem; color: #417505;">In Courier Transit</div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="p-3 luxury-card h-100" style="border-top: 4px solid var(--tv-accent-lime) !important; background: var(--tv-white);">
+                    <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Delivered</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--tv-primary-dark);">@Model.DeliveredOrdersCount</div>
+                    <div style="font-size: 0.72rem; color: #4C8200;">Completed Orders</div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="p-3 luxury-card-dark h-100" style="border-top: 4px solid var(--tv-accent-lime) !important;">
+                    <div class="text-muted" style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700;">Today's Orders</div>
+                    <div style="font-size: 1.6rem; font-weight: 800; color: var(--tv-accent-lime);">@Model.TodayOrdersCount</div>
+                    <div style="font-size: 0.72rem; color: #8BE000;">New Today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Figures & Queue Table -->
+        <div class="row g-4" id="orders">
+            <div class="col-lg-8">
+                <div class="p-4 rounded luxury-card" style="background: var(--tv-white);">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div>
+                            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.2rem;">Active Fulfillment Queue</h3>
+                            <p class="text-muted small mb-0">Orders currently awaiting verification, packing, or courier dispatch.</p>
+                        </div>
+                        <a asp-area="Sales" asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-outline-dark">View All</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" style="font-size: 0.88rem;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Order Reference</th>
+                                    <th>Recipient</th>
+                                    <th>Destination</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.ActiveOrdersQueue.Any())
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            <i class="bi bi-check2-all display-6 text-success d-block mb-1"></i>
+                                            All orders have been processed and dispatched! No pending items in queue.
+                                        </td>
+                                    </tr>
+                                }
+                                @foreach (var order in Model.ActiveOrdersQueue)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="fw-bold font-monospace" style="color: var(--tv-primary);">@order.OrderNumber</span>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">@order.ShippingFullName</div>
+                                            <small class="text-muted">@order.ShippingPhone</small>
+                                        </td>
+                                        <td>
+                                            <div>@order.ShippingCity</div>
+                                        </td>
+                                        <td class="text-end fw-bold">₹@order.TotalAmount.ToString("N2")</td>
+                                        <td class="text-center">
+                                            @switch (order.Status)
+                                            {
+                                                case TimeVerse.Models.OrderStatus.Pending:
+                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                    break;
+                                                case TimeVerse.Models.OrderStatus.Confirmed:
+                                                    <span class="badge bg-primary">Confirmed</span>
+                                                    break;
+                                                case TimeVerse.Models.OrderStatus.Processing:
+                                                    <span class="badge bg-info">Processing</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary">@order.Status</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td class="text-end">
+                                            <a asp-area="Sales" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id" class="tv-btn-primary" style="padding: 0.3rem 0.75rem; font-size: 0.8rem;">
+                                                Process
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Sales Performance & Quick Stock Check -->
+            <div class="col-lg-4">
+                <div class="p-4 rounded mb-4" style="background: var(--tv-surface-dark); border: 1px solid var(--tv-border-dark); color: var(--tv-white);">
+                    <h4 style="color: var(--tv-accent-lime); font-size: 1.15rem; margin-bottom: 1rem;">Sales Velocity</h4>
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom" style="border-color: #383834 !important;">
+                        <span class="text-muted">Today's Net Volume:</span>
+                        <span class="fw-bold" style="font-size: 1.15rem; color: #FFF;">₹@Model.TodaySales.ToString("N0")</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Trailing 7-Day Net:</span>
+                        <span class="fw-bold" style="font-size: 1.15rem; color: var(--tv-accent-lime);">₹@Model.WeekSales.ToString("N0")</span>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded luxury-card" style="background: var(--tv-white);">
+                    <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Quick Stock Check</h4>
+                    <p class="text-muted small mb-3">Quickly verify inventory status and available units before committing orders to patrons.</p>
+                    <a asp-area="Sales" asp-controller="Stock" asp-action="Index" class="btn btn-outline-dark w-100 py-2">
+                        <i class="bi bi-search me-1"></i> Open Inventory Lookup
+                    </a>
+                </div>
+
+                <div class="p-4 rounded luxury-card mt-4" style="background: var(--tv-white);">
+                    <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;"><i class="bi bi-box-seam me-1 text-primary"></i> Catalog & Watches</h4>
+                    <p class="text-muted small mb-3">Add new watches to the inventory, manage brand houses, and define product categories.</p>
+                    <div class="d-flex flex-column gap-2">
+                        <a asp-area="Admin" asp-controller="Watches" asp-action="Create" class="btn btn-primary w-100 py-2 fw-semibold" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border: none;">
+                            <i class="bi bi-plus-circle me-1"></i> Add New Watch
+                        </a>
+                        <div class="d-flex gap-2">
+                            <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-outline-dark w-50 py-2 btn-sm fw-semibold">
+                                <i class="bi bi-tags me-1"></i> + Category
+                            </a>
+                            <a asp-area="Admin" asp-controller="Brands" asp-action="Create" class="btn btn-outline-dark w-50 py-2 btn-sm fw-semibold">
+                                <i class="bi bi-building me-1"></i> + Brand
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,160 @@
+@model TimeVerse.ViewModels.Admin.AdminUserOrderHistoryViewModel
+@{
+    ViewData["Title"] = $"Order History: {Model.FullName} — Admin";
+}
+
+<!-- Admin Console Header -->
+<section class="tv-catalog-header" style="padding: 2rem 0 1.5rem;">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <nav class="breadcrumb-nav mb-2" aria-label="breadcrumb">
+                    <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="text-white text-decoration-none">Admin</a>
+                    <span class="text-muted mx-2">/</span>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="text-white text-decoration-none">Users</a>
+                    <span class="text-muted mx-2">/</span>
+                    <span style="color: var(--tv-accent);">Order History</span>
+                </nav>
+                <h1 style="font-size: 2.2rem; color: #FFFFFF; margin-bottom: 0.25rem;">@Model.FullName's ORDERS</h1>
+                <p style="color: #A6A59E; margin-bottom: 0;">Audit purchase records and fulfillment status for @Model.Email.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="tv-btn-primary" style="padding: 0.55rem 1.1rem;">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Users
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Admin Navigation Bar -->
+<div class="tv-dashboard-bar">
+    <div class="container-xl">
+        <div class="tv-dashboard-nav">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-speedometer2"></i> Overview</a>
+            <a asp-area="Admin" asp-controller="Watches" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-watch"></i> Watches</a>
+            <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-building"></i> Brands</a>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-tags"></i> Categories</a>
+            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="tv-dashboard-link"><i class="bi bi-box-seam"></i> Orders</a>
+            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="tv-dashboard-link active"><i class="bi bi-people"></i> Users</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="tv-dashboard-link text-white ms-auto"><i class="bi bi-box-arrow-up-right"></i> View Storefront</a>
+        </div>
+    </div>
+</div>
+
+<section class="tv-section-light" style="padding: 2.5rem 0 4.5rem;">
+    <div class="container-xl">
+        <!-- Customer Summary Card -->
+        <div class="luxury-card p-4 mb-4" style="background: var(--tv-white);">
+            <div class="row g-3 align-items-center">
+                <div class="col-md-3">
+                    <span class="text-muted small text-uppercase fw-bold d-block">Account Holder</span>
+                    <div class="fs-5 fw-bold">@Model.FullName</div>
+                    <span class="badge bg-secondary">Role: @Model.Role</span>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted small text-uppercase fw-bold d-block">Contact Info</span>
+                    <div><i class="bi bi-envelope text-muted me-1"></i> @Model.Email</div>
+                    <div><i class="bi bi-telephone text-muted me-1"></i> @(string.IsNullOrEmpty(Model.PhoneNumber) ? "Not provided" : Model.PhoneNumber)</div>
+                </div>
+                <div class="col-md-3">
+                    <span class="text-muted small text-uppercase fw-bold d-block">Account Status</span>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success px-2 py-1">Active Account</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger px-2 py-1">Suspended</span>
+                    }
+                    <div class="small text-muted mt-1">Member since @Model.CreatedAt.ToString("MMM yyyy")</div>
+                </div>
+                <div class="col-md-3 text-md-end">
+                    <span class="text-muted small text-uppercase fw-bold d-block">Lifetime Orders</span>
+                    <div class="fs-4 fw-bold" style="color: var(--tv-primary);">@Model.Orders.Count order(s)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="luxury-card p-0" style="background: var(--tv-white); overflow: hidden;">
+            <div class="p-3 border-bottom bg-light">
+                <h5 class="fw-bold mb-0" style="font-size: 1.1rem;"><i class="bi bi-bag-check me-2"></i>Order Transaction Records</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="padding-left: 1.25rem;">Order Number</th>
+                            <th>Date Placed</th>
+                            <th class="text-center">Items Ordered</th>
+                            <th class="text-end">Total Amount</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-end" style="padding-right: 1.25rem;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Orders.Any())
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox display-4 d-block mb-2"></i>
+                                    This user has not placed any orders yet.
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var o in Model.Orders)
+                        {
+                            <tr>
+                                <td style="padding-left: 1.25rem;">
+                                    <div class="fw-bold font-monospace" style="color: var(--tv-primary);">@o.OrderNumber</div>
+                                </td>
+                                <td>
+                                    <div>@o.OrderDate.ToString("dd MMM yyyy")</div>
+                                    <small class="text-muted">@o.OrderDate.ToString("hh:mm tt")</small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border">@o.TotalItems item(s)</span>
+                                </td>
+                                <td class="text-end fw-bold" style="color: var(--tv-primary);">
+                                    ₹@o.TotalAmount.ToString("N2")
+                                </td>
+                                <td class="text-center">
+                                    @switch (o.Status)
+                                    {
+                                        case TimeVerse.Models.OrderStatus.Pending:
+                                            <span class="badge bg-warning text-dark px-2 py-1">Pending</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Confirmed:
+                                            <span class="badge bg-primary text-white px-2 py-1">Confirmed</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Processing:
+                                            <span class="badge bg-info text-white px-2 py-1">Processing</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Shipped:
+                                            <span class="badge bg-secondary text-white px-2 py-1">Shipped</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Delivered:
+                                            <span class="badge bg-success text-white px-2 py-1">Delivered</span>
+                                            break;
+                                        case TimeVerse.Models.OrderStatus.Cancelled:
+                                            <span class="badge bg-danger text-white px-2 py-1">Cancelled</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">@o.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td class="text-end" style="padding-right: 1.25rem;">
+                                    <a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id" class="tv-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">
+                                        <i class="bi bi-eye"></i> View Order
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

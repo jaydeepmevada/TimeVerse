@@ -1,0 +1,77 @@
+@model TimeVerse.ViewModels.Admin.CategoryCrudViewModel
+@{
+    ViewData["Title"] = "Add Category — TimeVerse";
+}
+
+<section class="tv-catalog-header" style="background: linear-gradient(135deg, #070e1b 0%, #0c1a30 100%); padding: 2.5rem 0 2rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+    <div class="container-xl">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <span class="badge px-3 py-2 rounded-pill mb-2" style="background: rgba(30, 92, 179, 0.25); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">
+                    <i class="bi bi-tags me-1"></i> Category Management
+                </span>
+                <h1 style="font-size: 2.2rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.35rem; letter-spacing: -0.02em;">Add Category</h1>
+                <p style="color: #94a3b8; margin-bottom: 0; font-size: 0.95rem;">Enter the category name and description below.</p>
+            </div>
+            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn" style="background: rgba(255,255,255,0.06); color: #f8fafc; border: 1px solid rgba(255,255,255,0.15); padding: 0.6rem 1.25rem; font-weight: 600; border-radius: 8px; transition: all 0.2s;">
+                <i class="bi bi-arrow-left me-1"></i> Back to Categories
+            </a>
+        </div>
+    </div>
+</section>
+
+<section style="background: #0b1322; min-height: 75vh; padding: 3rem 0 5rem;">
+    <div class="container-xl">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-xl-6">
+                <div class="card border-0 shadow-lg" style="background: #111e33; border: 1px solid rgba(255,255,255,0.08) !important; border-radius: 14px; overflow: hidden;">
+                    <div class="card-header border-0 py-3 px-4" style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06) !important;">
+                        <span class="fw-bold text-uppercase" style="font-size: 0.85rem; letter-spacing: 0.08em; color: #60a5fa;">
+                            <i class="bi bi-card-checklist me-1"></i> Category Details
+                        </span>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; border-radius: 10px; font-size: 0.9rem;"></div>
+
+                        <form method="post" asp-area="Admin" asp-controller="Categories" asp-action="Create">
+                            @Html.AntiForgeryToken()
+
+                            <!-- 1. Category Name -->
+                            <div class="mb-4">
+                                <label asp-for="Name" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                    Category Name <span class="text-danger">*</span>
+                                </label>
+                                <input asp-for="Name" class="form-control" placeholder="e.g. Men's Watches, Women's Watches" style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem;" autofocus />
+                                <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <!-- 2. Description -->
+                            <div class="mb-4">
+                                <label asp-for="Description" class="form-label fw-bold" style="color: #f1f5f9; font-size: 0.9rem;">
+                                    Description
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Brief information about this category..." style="background: #09101c; border: 1px solid rgba(255,255,255,0.12); color: #ffffff; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem; resize: vertical;"></textarea>
+                                <span asp-validation-for="Description" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex align-items-center justify-content-between pt-3 border-top" style="border-color: rgba(255,255,255,0.08) !important;">
+                                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn btn-outline-secondary px-3 py-2" style="border-color: rgba(255,255,255,0.2); color: #cbd5e1;">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border: none; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+                                    <i class="bi bi-check2-circle me-1"></i> Add Category
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,393 @@
+@model TimeVerse.ViewModels.WatchDetailsViewModel
+@{
+    ViewData["Title"] = $"{Model.Name} by {Model.BrandName} — TimeVerse";
+}
+
+<!-- Breadcrumb Navigation -->
+<div style="background: var(--tv-white); border-bottom: 1px solid var(--tv-border); padding: 0.85rem 0;">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" style="font-size: 0.85rem;">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-muted">Home</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Shop" asp-action="Index" class="text-muted">Shop</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Shop" asp-action="Index" asp-route-brand="@Model.BrandName" class="text-muted">@Model.BrandName</a></li>
+                <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Product Details Section (Phase 2.5) -->
+<section class="tv-section-light" style="padding: 3rem 0 5rem; background: var(--tv-bg);">
+    <div class="container-xl">
+        <div class="row g-5">
+            <!-- Left: Large Image & Thumbnail Gallery -->
+            <div class="col-lg-6">
+                <div class="tv-details-gallery">
+                    <!-- Main Large Image -->
+                    <div class="tv-details-main-img" style="background: var(--tv-white); border: 1px solid var(--tv-border); border-radius: 12px; padding: 2.5rem; text-align: center; box-shadow: var(--tv-shadow-card); position: relative;">
+                        <img id="tvMainWatchImg" src="@Model.PrimaryImageUrl" alt="@Model.Name" style="max-height: 420px; width: auto; object-fit: contain; transition: transform 0.3s ease;" />
+                        
+                        <!-- Top Badges -->
+                        <div class="tv-card-badges">
+                            @if (Model.IsLimitedEdition)
+                            {
+                                <span class="tv-badge tv-badge-dark"><i class="bi bi-gem"></i> Limited Edition</span>
+                            }
+                            @if (Model.IsBestSeller)
+                            {
+                                <span class="tv-badge" style="background: var(--tv-accent); color: #FFFFFF;"><i class="bi bi-fire"></i> Best Seller</span>
+                            }
+                            @if (Model.IsNewArrival)
+                            {
+                                <span class="tv-badge" style="background: var(--tv-secondary); color: #FFFFFF;">New Arrival</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Thumbnails row -->
+                    @if (Model.Images.Count > 1)
+                    {
+                        <div class="tv-thumb-row d-flex gap-2 mt-3">
+                            @for (int i = 0; i < Model.Images.Count; i++)
+                            {
+                                var img = Model.Images[i];
+                                <div class="tv-thumb-btn @(i == 0 ? "active" : "")" data-img-src="@img" style="width: 80px; height: 80px; border: 1px solid var(--tv-border); border-radius: 8px; background: #FFF; padding: 4px; cursor: pointer;">
+                                    <img src="@img" alt="@Model.Name thumbnail" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right: Product Information & Purchase Actions -->
+            <div class="col-lg-6">
+                <div class="tv-card-brand" style="font-size: 0.88rem; color: var(--tv-accent); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem;">
+                    @Model.BrandName
+                </div>
+                <h1 style="font-size: 2.2rem; line-height: 1.25; margin-bottom: 0.75rem; font-weight: 700; color: var(--tv-primary);">
+                    @Model.Name
+                </h1>
+
+                <!-- SKU, Rating & Stock Meta -->
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-3" style="font-size: 0.88rem;">
+                    <span class="text-muted">SKU: <strong class="text-dark">@Model.SKU</strong></span>
+                    <span class="text-muted">•</span>
+                    <span class="tv-stars">
+                        <i class="bi bi-star-fill text-warning"></i> <strong>@Model.Rating.ToString("0.0")</strong>
+                    </span>
+                    <span class="text-muted">(@Model.ReviewCount Reviews)</span>
+                    <span class="text-muted">•</span>
+                    @if (Model.InStock)
+                    {
+                        <span class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> In Stock (@Model.StockQuantity Available)</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold"><i class="bi bi-x-circle-fill"></i> Out of Stock</span>
+                    }
+                </div>
+
+                <!-- Price Highlight Box -->
+                <div class="d-flex align-items-baseline gap-3 p-3 rounded mb-4" style="background: var(--tv-white); border: 1px solid var(--tv-border); box-shadow: var(--tv-shadow-subtle);">
+                    <span class="tv-price-current" style="font-size: 2.1rem; font-weight: 800; color: var(--tv-primary);">₹@Model.Price.ToString("N0")</span>
+                    @if (Model.OriginalPrice.HasValue && Model.OriginalPrice.Value > Model.Price)
+                    {
+                        <span class="tv-price-original" style="font-size: 1.15rem; text-decoration: line-through; color: var(--tv-muted);">₹@Model.OriginalPrice.Value.ToString("N0")</span>
+                        <span class="tv-discount-pill" style="font-size: 0.82rem; padding: 0.25rem 0.6rem; background: var(--tv-accent-light); color: var(--tv-accent); font-weight: 700; border-radius: 4px;">
+                            Save @Model.DiscountPercentage.ToString("0")%
+                        </span>
+                    }
+                    <span class="text-muted ms-auto" style="font-size: 0.8rem;">Inclusive of all taxes</span>
+                </div>
+
+                <!-- Description -->
+                <p style="font-size: 0.98rem; color: #4B5563; line-height: 1.7; margin-bottom: 1.75rem;">
+                    @Model.Description
+                </p>
+
+                <!-- Actions: Quantity Selector + Add to Cart + Wishlist -->
+                <div class="mb-4">
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="watchId" value="@Model.Id" />
+                        <div class="d-flex align-items-center" style="border: 1px solid var(--tv-border); border-radius: 6px; background: #FFF; padding: 0.35rem 0.75rem;">
+                            <span class="text-muted me-2" style="font-size: 0.82rem; font-weight: 600;">QTY:</span>
+                            <select name="quantity" class="form-select form-select-sm border-0 shadow-none" style="width: 70px; font-weight: 700;">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+
+                        @if (Model.InStock)
+                        {
+                            <button type="submit" class="tv-btn-primary flex-grow-1" style="padding: 0.75rem 1.5rem;">
+                                <i class="bi bi-bag-plus"></i> Add to Cart
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="tv-btn-primary flex-grow-1 disabled" disabled style="padding: 0.75rem 1.5rem;">
+                                Out of Stock
+                            </button>
+                        }
+                    </form>
+
+                    <div class="d-flex gap-2">
+                        <form asp-controller="Wishlist" asp-action="Add" method="post" class="flex-grow-1">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="watchId" value="@Model.Id" />
+                            <button type="submit" class="tv-btn-outline w-100" style="padding: 0.65rem 1.2rem;">
+                                <i class="bi bi-heart me-1"></i> Add to Wishlist
+                            </button>
+                        </form>
+                        <a asp-controller="Compare" asp-action="Index" asp-route-ids="@Model.Id" class="tv-btn-outline" style="padding: 0.65rem 1.2rem;">
+                            <i class="bi bi-columns-gap me-1"></i> Compare
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Trust Guarantees -->
+                <div class="row g-2 pt-3 border-top" style="border-color: var(--tv-border) !important;">
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem;">
+                            <i class="bi bi-shield-check text-success fs-5"></i>
+                            <span class="fw-semibold">100% Authentic</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem;">
+                            <i class="bi bi-truck text-primary fs-5"></i>
+                            <span class="fw-semibold">Insured Delivery</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-center gap-2" style="font-size: 0.82rem;">
+                            <i class="bi bi-arrow-counterclockwise text-warning fs-5"></i>
+                            <span class="fw-semibold">14-Day Returns</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specifications & Information Tabs (Phase 2.5) -->
+        <div class="mt-5 pt-4 border-top" style="border-color: var(--tv-border) !important;">
+            <ul class="nav nav-tabs tv-nav-tabs" id="watchTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-bold" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab" style="color: var(--tv-primary);">
+                        <i class="bi bi-gear-wide me-1"></i> Specifications
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" style="color: var(--tv-primary);">
+                        <i class="bi bi-shield-lock me-1"></i> Shipping & Warranty
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" style="color: var(--tv-primary);">
+                        <i class="bi bi-chat-square-quote me-1"></i> Reviews (@Model.CustomerReviews.Count)
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4 rounded-bottom" id="watchTabContent" style="background: var(--tv-white); border: 1px solid var(--tv-border); border-top: none; box-shadow: var(--tv-shadow-subtle);">
+                <!-- Tab 1: Specifications (Phase 2.5 Table) -->
+                <div class="tab-pane fade show active" id="specs" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <table class="tv-spec-table">
+                                <tr>
+                                    <td class="spec-name">Brand</td>
+                                    <td class="spec-val">@Model.BrandName</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">SKU</td>
+                                    <td class="spec-val">@Model.SKU</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Movement</td>
+                                    <td class="spec-val">@Model.MovementType</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Case Material</td>
+                                    <td class="spec-val">@Model.CaseMaterial</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Case Diameter</td>
+                                    <td class="spec-val">@Model.CaseSize</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="tv-spec-table">
+                                <tr>
+                                    <td class="spec-name">Strap Material</td>
+                                    <td class="spec-val">@Model.StrapMaterial</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Dial Color</td>
+                                    <td class="spec-val">@Model.DialColor</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Water Resistance</td>
+                                    <td class="spec-val">@Model.WaterResistance</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Gender</td>
+                                    <td class="spec-val">@Model.Gender</td>
+                                </tr>
+                                <tr>
+                                    <td class="spec-name">Warranty</td>
+                                    <td class="spec-val">@Model.Warranty</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Shipping & Warranty -->
+                <div class="tab-pane fade" id="shipping" role="tabpanel">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-2">Shipping Information</h5>
+                            <p class="text-muted" style="font-size: 0.92rem; line-height: 1.7;">
+                                Every TimeVerse timepiece is dispatched via tamper-proof armored courier service. Orders over ₹50,000 qualify for complimentary insured white-glove express delivery across India.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="fw-bold mb-2">Warranty Protection</h5>
+                            <p class="text-muted" style="font-size: 0.92rem; line-height: 1.7;">
+                                Backed by <strong>@Model.Warranty</strong> covering internal mechanical defects, movement calibration, and manufacturer craftsmanship. Each watch includes an official serial card.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Reviews -->
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Customer Feedback</h5>
+                        <span class="text-muted small">@Model.CustomerReviews.Count total reviews</span>
+                    </div>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="p-3 mb-4 rounded border bg-light">
+                            <h6 class="fw-bold mb-2"><i class="bi bi-pencil-square me-1"></i> Write a Review</h6>
+                            <form asp-controller="Shop" asp-action="AddReview" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="watchId" value="@Model.Id" />
+                                <div class="row g-2 mb-2">
+                                    <div class="col-sm-4">
+                                        <label class="form-label small fw-bold">Rating</label>
+                                        <select name="rating" class="form-select form-select-sm">
+                                            <option value="5">★★★★★ (5 Stars - Exceptional)</option>
+                                            <option value="4">★★★★☆ (4 Stars - Very Good)</option>
+                                            <option value="3">★★★☆☆ (3 Stars - Average)</option>
+                                            <option value="2">★★☆☆☆ (2 Stars - Disappointing)</option>
+                                            <option value="1">★☆☆☆☆ (1 Star - Poor)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <label class="form-label small fw-bold">Your Horological Assessment</label>
+                                        <input type="text" name="comment" required class="form-control form-control-sm" placeholder="Describe craftsmanship, accuracy, feel on wrist..." />
+                                    </div>
+                                </div>
+                                <button type="submit" class="tv-btn-primary" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">Submit Review</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-3 mb-4 rounded border bg-light text-muted small">
+                            <i class="bi bi-info-circle me-1"></i> <a asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" class="fw-bold text-decoration-none">Sign in</a> to leave a collector review.
+                        </div>
+                    }
+
+                    @if (Model.CustomerReviews.Any())
+                    {
+                        <div class="d-flex flex-column gap-3">
+                            @foreach (var review in Model.CustomerReviews)
+                            {
+                                <div class="p-3 rounded border" style="background: var(--tv-bg);">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <strong class="text-dark">@review.AuthorName</strong>
+                                            @if (review.IsVerifiedPurchaser)
+                                            {
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle small">Verified Buyer</span>
+                                            }
+                                        </div>
+                                        <span class="text-muted small">@review.DateAgo</span>
+                                    </div>
+                                    <div class="tv-stars mb-2">
+                                        @for (int s = 1; s <= 5; s++)
+                                        {
+                                            <i class="bi bi-star-fill @(s <= review.Rating ? "text-warning" : "text-secondary")"></i>
+                                        }
+                                    </div>
+                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">@review.Comment</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No reviews yet for this timepiece.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Watches -->
+        @if (Model.RelatedWatches.Any())
+        {
+            <div class="mt-5 pt-4">
+                <div class="d-flex justify-content-between align-items-end mb-4">
+                    <div>
+                        <span class="tv-section-tag">Explore More</span>
+                        <h3 class="tv-section-title mb-0" style="font-size: 1.7rem;">Similar Timepieces</h3>
+                    </div>
+                    <a asp-controller="Shop" asp-action="Index" class="tv-btn-outline" style="padding: 0.5rem 1rem; font-size: 0.78rem;">
+                        View All <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="row g-4">
+                    @foreach (var rel in Model.RelatedWatches)
+                    {
+                        <div class="col-md-4">
+                            <partial name="_WatchCard" model="rel" />
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Interactive thumbnail switcher
+        document.querySelectorAll('.tv-thumb-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tv-thumb-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const src = this.getAttribute('data-img-src');
+                const mainImg = document.getElementById('tvMainWatchImg');
+                if (mainImg && src) {
+                    mainImg.style.opacity = '0.3';
+                    setTimeout(() => {
+                        mainImg.src = src;
+                        mainImg.style.opacity = '1';
+                    }, 150);
+                }
+            });
+        });
+    </script>
+}

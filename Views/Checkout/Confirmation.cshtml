@@ -1,0 +1,92 @@
+@model TimeVerse.ViewModels.Checkout.OrderConfirmationViewModel
+@{
+    ViewData["Title"] = "Order Confirmed — #" + Model.OrderNumber;
+}
+
+<div class="luxury-container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="luxury-card text-center p-5 mb-4" style="background: var(--tv-white);">
+                <div class="mb-3">
+                    <div style="font-size: 3rem; color: var(--tv-accent);"><i class="bi bi-check-circle-fill"></i></div>
+                </div>
+
+                <span class="badge bg-success mx-auto mb-3 d-inline-block px-3 py-2" style="font-size: 0.85rem;">Order Placed Successfully</span>
+                <h1 class="display-6 fw-bold mb-2">Thank You For Your Order</h1>
+                <p class="text-muted fs-6 mb-4">
+                    Your watch order has been received and is now being prepared for shipment.
+                </p>
+
+                <div class="p-4 rounded-3 text-start mb-4 border" style="background: var(--tv-cream-light);">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase">Order #</span>
+                            <div class="fw-bold fs-5 text-dark">@Model.OrderNumber</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase">Order Date</span>
+                            <div class="fw-bold">@Model.OrderDate.ToString("dd MMMM yyyy, hh:mm tt")</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase">Payment Method</span>
+                            <div class="fw-bold"><i class="bi bi-shield-check text-success me-1"></i> @Model.PaymentMethod</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <span class="text-muted small text-uppercase">Order Status</span>
+                            <div><span class="badge bg-success" style="font-size: 0.78rem; padding: 4px 10px;">@Model.Status</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="text-start mb-4 p-3 rounded border" style="background: var(--tv-white);">
+                    <h6 class="fw-bold text-uppercase small text-muted mb-2"><i class="bi bi-geo-alt me-1"></i> Delivery Address</h6>
+                    <div class="fw-bold">@Model.ShippingFullName</div>
+                    <div class="text-muted">@Model.FullAddress</div>
+                    <div class="text-muted small"><i class="bi bi-telephone me-1"></i> @Model.Phone</div>
+                </div>
+
+                <!-- Ordered Items Breakdown -->
+                <div class="text-start mb-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-box-seam me-1"></i> Ordered Watches</h5>
+                    <div class="list-group list-group-flush border-top border-bottom">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@item.ImageUrl" alt="@item.WatchName" class="rounded border" style="width: 60px; height: 60px; object-fit: cover;" />
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">@item.WatchName</h6>
+                                        <small class="text-muted">SKU: @item.SKU | Qty: @item.Quantity</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">₹@((item.UnitPrice * item.Quantity).ToString("N0"))</div>
+                                    <small class="text-muted">₹@item.UnitPrice.ToString("N0") each</small>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-baseline pt-3">
+                        <span class="fs-5 fw-bold">Total Amount:</span>
+                        <span class="fs-3 fw-bold text-dark">₹@Model.FinalAmount.ToString("N0")</span>
+                    </div>
+                </div>
+
+                <!-- Call to actions -->
+                <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+                    <a asp-controller="Orders" asp-action="InvoiceByNumber" asp-route-orderNumber="@Model.OrderNumber" target="_blank" class="tv-btn-outline" style="padding: 0.65rem 1.4rem;">
+                        <i class="bi bi-printer me-2"></i> Print Invoice
+                    </a>
+                    <a asp-area="Customer" asp-controller="Orders" asp-action="Index" class="tv-btn-primary">
+                        <i class="bi bi-bag-check me-2"></i> View My Orders
+                    </a>
+                    <a asp-controller="Shop" asp-action="Index" class="tv-btn-outline" style="padding: 0.65rem 1.4rem;">
+                        <i class="bi bi-shop me-2"></i> Continue Shopping
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

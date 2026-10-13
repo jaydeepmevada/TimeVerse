@@ -1,0 +1,65 @@
+@model TimeVerse.ViewModels.Admin.BrandCrudViewModel
+@{
+    ViewData["Title"] = "Modify Luxury Brand — Admin Console";
+}
+
+<div class="luxury-container py-5">
+    <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
+        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Console</a>
+        <span class="separator">/</span>
+        <a asp-area="Admin" asp-controller="Brands" asp-action="Index">Brands</a>
+        <span class="separator">/</span>
+        <span class="current">Edit Brand</span>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+        <div>
+            <span class="badge-accent mb-2">Brand Management</span>
+            <h1 class="display-5 fw-bold font-serif mb-0">Modify Luxury Brand</h1>
+        </div>
+        <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-1"></i> Back to Brands
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card luxury-card p-4 p-md-5">
+                <form method="post" asp-area="Admin" asp-controller="Brands" asp-action="Edit">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label small fw-bold">Brand Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g. Titan, Fossil, Casio, Rolex" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label small fw-bold">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Brief information about the brand..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsActive" class="form-check-label fw-semibold">Active in Public Store</label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 pt-3 border-top">
+                        <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-luxury-primary px-4 fw-bold">
+                            <i class="bi bi-check2-circle me-1"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

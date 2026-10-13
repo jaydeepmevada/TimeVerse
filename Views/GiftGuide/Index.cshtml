@@ -1,0 +1,115 @@
+@model TimeVerse.ViewModels.GiftGuide.GiftGuideViewModel
+@{
+    ViewData["Title"] = "Luxury Horological Gift Guide";
+}
+
+<div class="luxury-container py-5">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
+        <a asp-controller="Home" asp-action="Index">TimeVerse</a>
+        <span class="separator">/</span>
+        <span class="current">Gift Guide</span>
+    </nav>
+
+    <!-- Hero Banner -->
+    <div class="card bg-charcoal text-white p-5 rounded-4 mb-5 border-0 shadow position-relative overflow-hidden">
+        <div class="row align-items-center position-relative z-index-1">
+            <div class="col-lg-8">
+                <span class="badge-accent mb-3">Celebration & Milestones</span>
+                <h1 class="display-4 fw-bold font-serif mb-3">The Art of Timeless Gifting</h1>
+                <p class="lead text-cream-muted mb-4">
+                    A luxury timepiece marks weddings, promotions, anniversaries, and personal triumphs that endure for generations. Every acquisition arrives in bespoke signature velvet packaging with certificate of authenticity.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <span class="badge bg-dark border border-secondary p-2"><i class="bi bi-gift me-1 text-accent"></i> Complimentary Velvet Gift Presentation</span>
+                    <span class="badge bg-dark border border-secondary p-2"><i class="bi bi-shield-check me-1 text-accent"></i> Personalized Engraved Message Card</span>
+                    <span class="badge bg-dark border border-secondary p-2"><i class="bi bi-truck me-1 text-accent"></i> Insured Armored Courier</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Gifts for Him -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+            <div>
+                <span class="badge-accent mb-1">Masculine Precision</span>
+                <h2 class="display-6 fw-bold font-serif mb-0">Curated Gifts For Him</h2>
+            </div>
+            <a asp-controller="Watches" asp-action="Index" asp-route-gender="Men" class="text-decoration-none fw-bold text-dark">
+                View All For Him <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @foreach (var watch in Model.GiftsForHim)
+            {
+                <div class="col-12 col-md-6 col-lg-3">
+                    <partial name="_WatchCard" model="watch" />
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- 2. Gifts for Her -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+            <div>
+                <span class="badge-accent mb-1">Feminine Radiance</span>
+                <h2 class="display-6 fw-bold font-serif mb-0">Curated Gifts For Her</h2>
+            </div>
+            <a asp-controller="Watches" asp-action="Index" asp-route-gender="Women" class="text-decoration-none fw-bold text-dark">
+                View All For Her <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @foreach (var watch in Model.GiftsForHer)
+            {
+                <div class="col-12 col-md-6 col-lg-3">
+                    <partial name="_WatchCard" model="watch" />
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- 3. Heirloom Investments -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+            <div>
+                <span class="badge-accent mb-1">Prestige Legacy</span>
+                <h2 class="display-6 fw-bold font-serif mb-0">Heirloom Milestone Investments</h2>
+            </div>
+            <a asp-controller="Watches" asp-action="Index" asp-route-category="Luxury" class="text-decoration-none fw-bold text-dark">
+                View Haute Horlogerie <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @foreach (var watch in Model.HeirloomInvestments)
+            {
+                <div class="col-12 col-md-6 col-lg-3">
+                    <partial name="_WatchCard" model="watch" />
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- 4. Under ₹50,000 -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-2">
+            <div>
+                <span class="badge-accent mb-1">Accessible Luxury</span>
+                <h2 class="display-6 fw-bold font-serif mb-0">Distinguished Gifts Under ₹50,000</h2>
+            </div>
+            <a asp-controller="Watches" asp-action="Index" asp-route-maxPrice="50000" class="text-decoration-none fw-bold text-dark">
+                View Under ₹50,000 <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            @foreach (var watch in Model.UnderFiftyThousand)
+            {
+                <div class="col-12 col-md-6 col-lg-3">
+                    <partial name="_WatchCard" model="watch" />
+                </div>
+            }
+        </div>
+    </div>
+</div>

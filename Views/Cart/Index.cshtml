@@ -1,0 +1,226 @@
+@model TimeVerse.ViewModels.Cart.CartViewModel
+@{
+    ViewData["Title"] = "Shopping Cart — TimeVerse";
+}
+
+<div class="luxury-container py-5" style="max-width: 1200px; margin: 0 auto; padding-left: 1rem; padding-right: 1rem;">
+    <!-- Breadcrumb & Header -->
+    <nav class="breadcrumb-nav mb-4" aria-label="breadcrumb">
+        <a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none">Home</a>
+        <span class="mx-2 text-muted">/</span>
+        <span class="text-dark fw-semibold">Shopping Cart</span>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+        <div>
+            <span class="tv-section-tag mb-1" style="color: var(--tv-accent);">Your Selection</span>
+            <h1 class="display-6 fw-bold mb-0" style="font-family: var(--tv-font-heading); color: var(--tv-primary);">SHOPPING CART</h1>
+        </div>
+        <span class="text-muted">@Model.TotalItemCount @(Model.TotalItemCount == 1 ? "watch" : "watches") in cart</span>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="border-radius: 8px;">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert" style="border-radius: 8px;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Items.Any())
+    {
+        <div class="card text-center py-5 my-4" style="background: var(--tv-white); border: 1px solid var(--tv-border); border-radius: 12px; box-shadow: var(--tv-shadow-subtle);">
+            <div class="card-body py-4">
+                <div class="display-1 text-muted mb-3"><i class="bi bi-bag-x"></i></div>
+                <h3 class="fw-bold mb-2" style="font-family: var(--tv-font-heading); color: var(--tv-primary);">Your Shopping Cart is Empty</h3>
+                <p class="text-muted max-w-md mx-auto mb-4" style="max-width: 480px; margin: 0 auto 1.5rem;">
+                    Discover our collection of handcrafted luxury watches, Japanese mechanical automatics, and timeless chronographs.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-controller="Shop" asp-action="Index" class="tv-btn-primary">
+                        <i class="bi bi-compass me-2"></i> Explore Shop
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Free Shipping Progress Banner -->
+        <div class="card text-white mb-4 border-0 p-3 rounded-3 shadow-sm" style="background: var(--tv-primary);">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 42px; height: 42px; border-radius: 50%; background: var(--tv-accent); color: var(--tv-primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div>
+                        @if (Model.QualifiesForFreeShipping)
+                        {
+                            <span class="fw-bold" style="color: var(--tv-accent);">Free Express Delivery Unlocked!</span>
+                            <p class="text-light small mb-0 opacity-75">Your order qualifies for complimentary insured delivery across India.</p>
+                        }
+                        else
+                        {
+                            <span class="fw-bold text-white">Add ₹@Model.AmountNeededForFreeShipping.ToString("N0") more for Free Delivery</span>
+                            <p class="text-light small mb-0 opacity-75">Orders above ₹@Model.FreeShippingThreshold.ToString("N0") receive complimentary delivery.</p>
+                        }
+                    </div>
+                </div>
+                <div class="text-end">
+                    <span class="badge border text-light px-3 py-2" style="background: var(--tv-secondary); border-color: var(--tv-border-dark) !important;">
+                        Free Delivery &gt; ₹50,000
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Items Table List (Phase 2.6) -->
+            <div class="col-lg-8">
+                <div class="card" style="background: var(--tv-white); border: 1px solid var(--tv-border); border-radius: 10px; overflow: hidden; box-shadow: var(--tv-shadow-subtle);">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead style="background: #F1F5F9;">
+                                <tr>
+                                    <th scope="col" style="min-width: 260px; padding: 1rem;">Product</th>
+                                    <th scope="col" class="text-center" style="padding: 1rem;">Price</th>
+                                    <th scope="col" class="text-center" style="min-width: 130px; padding: 1rem;">Quantity</th>
+                                    <th scope="col" class="text-end" style="padding: 1rem;">Subtotal</th>
+                                    <th scope="col" class="text-center" style="padding: 1rem;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td style="padding: 1rem;">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="@item.ImageUrl" alt="@item.WatchName" class="rounded border bg-light" style="width: 65px; height: 65px; object-fit: contain; padding: 4px;" />
+                                                <div>
+                                                    <span class="badge bg-light text-muted border text-uppercase" style="font-size: 0.65rem;">@item.BrandName</span>
+                                                    <h6 class="mb-0 fw-bold" style="font-family: var(--tv-font-heading);">
+                                                        <a asp-controller="Shop" asp-action="Details" asp-route-id="@item.WatchId" class="text-decoration-none text-dark">
+                                                            @item.WatchName
+                                                        </a>
+                                                    </h6>
+                                                    <small class="text-muted">SKU: @item.SKU</small>
+                                                    @if (item.StockQuantity <= 3)
+                                                    {
+                                                        <div class="text-danger small mt-1"><i class="bi bi-clock-history"></i> Only @item.StockQuantity left in stock!</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center fw-semibold" style="padding: 1rem;">
+                                            ₹@item.UnitPrice.ToString("N0")
+                                        </td>
+                                        <td class="text-center" style="padding: 1rem;">
+                                            <div class="d-inline-flex align-items-center border rounded bg-white">
+                                                <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                    <input type="hidden" name="quantity" value="@(item.Quantity - 1)" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-dark px-2 text-decoration-none" @(item.Quantity <= 1 ? "disabled" : "") style="font-weight: 700;">−</button>
+                                                </form>
+                                                <span class="px-2 fw-bold text-dark" style="min-width: 24px;">@item.Quantity</span>
+                                                <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                    <input type="hidden" name="quantity" value="@(item.Quantity + 1)" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-dark px-2 text-decoration-none" @(item.Quantity >= item.StockQuantity ? "disabled" : "") style="font-weight: 700;">+</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                        <td class="text-end fw-bold fs-6" style="padding: 1rem; color: var(--tv-primary);">
+                                            ₹@item.TotalPrice.ToString("N0")
+                                        </td>
+                                        <td class="text-center" style="padding: 1rem;">
+                                            <form asp-controller="Cart" asp-action="Remove" method="post">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                                <button type="submit" class="btn btn-sm text-danger border-0 bg-transparent" title="Remove from cart">
+                                                    <i class="bi bi-trash3 fs-5"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3 border-top">
+                        <a asp-controller="Shop" asp-action="Index" class="tv-btn-outline" style="padding: 0.5rem 1rem; font-size: 0.8rem;">
+                            <i class="bi bi-arrow-left me-1"></i> Continue Shopping
+                        </a>
+                        <form asp-controller="Cart" asp-action="Clear" method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to clear your shopping cart?');">
+                                <i class="bi bi-x-circle me-1"></i> Clear Cart
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cart Summary Sidebar (Phase 2.6) -->
+            <div class="col-lg-4">
+                <div class="card p-4 sticky-top" style="top: 90px; background: var(--tv-white); border: 1px solid var(--tv-border); border-radius: 10px; box-shadow: var(--tv-shadow-subtle);">
+                    <h4 class="fw-bold mb-3 border-bottom pb-2" style="font-family: var(--tv-font-heading); color: var(--tv-primary);">Order Summary</h4>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal (@Model.TotalItemCount items)</span>
+                        <span class="fw-semibold text-dark">₹@Model.Subtotal.ToString("N0")</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Shipping</span>
+                        <span>
+                            @if (Model.QualifiesForFreeShipping)
+                            {
+                                <span class="fw-bold" style="color: var(--tv-accent);">FREE</span>
+                            }
+                            else
+                            {
+                                <span class="text-dark">₹@Model.ShippingFee.ToString("N0")</span>
+                            }
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Taxes & Insurance</span>
+                        <span class="text-muted">Included</span>
+                    </div>
+
+                    <hr style="border-color: var(--tv-border);" />
+
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fw-bold fs-5" style="color: var(--tv-primary);">Total</span>
+                        <span class="fw-bold fs-3" style="color: var(--tv-primary); font-family: var(--tv-font-heading);">₹@Model.GrandTotal.ToString("N0")</span>
+                    </div>
+
+                    <a asp-controller="Checkout" asp-action="Index" class="tv-btn-primary w-100 py-3 mb-3 fw-bold text-center justify-content-center text-decoration-none">
+                        <i class="bi bi-shield-check me-2"></i> Proceed to Checkout
+                    </a>
+
+                    <div class="p-3 rounded text-center small text-muted" style="background: var(--tv-bg);">
+                        <div class="d-flex justify-content-center gap-3 mb-2 fs-5" style="color: var(--tv-accent);">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            <i class="bi bi-patch-check-fill"></i>
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <div class="text-dark fw-semibold">100% Certified Authentic Watches</div>
+                        <div>Secure 256-bit SSL Protected Checkout</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
